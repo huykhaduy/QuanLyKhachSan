@@ -14,13 +14,13 @@ public class PhieuThu extends Phieu implements ConsoleIO{
         maPhieuThu = ++id;
     }
 
-    public PhieuThu(int maKH,int maPhong) {
+    public PhieuThu(KhachHang maKH,Phong maPhong) {
         super();
         maPhieuThu = ++id;
         this.maKH = maKH;
         this.maPhong = maPhong;
     }
-    
+
     public void themDichVu() {
         dsdv.add(new ChiTietDichVu());
         dsdv.getLast().nhapThongTin();
@@ -56,7 +56,7 @@ public class PhieuThu extends Phieu implements ConsoleIO{
     @Override
     public void nhapThongTin() {
         System.out.print("> Nhập mã KH: ");
-        this.maKH = sc.nextInt();
+//        this.maKH = sc.nextInt();
         sc.nextLine();
     }
     

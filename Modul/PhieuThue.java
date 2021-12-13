@@ -16,7 +16,7 @@ public class PhieuThue extends Phieu implements ConsoleIO {
         maPhieuThue = ++id;
     }
 
-    public PhieuThue(int maKH, int maPhong) {
+    public PhieuThue(KhachHang maKH, Phong maPhong) {
         super();
         maPhieuThue = ++id;
         this.maKH = maKH;

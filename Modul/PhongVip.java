@@ -1,12 +1,10 @@
 
 package Modul;
 
-import DanhSach.DanhSachDichVu;
-import DanhSach.DanhSachUuDaiVip;
-import DanhSach.MyArray;
+import DanhSach.DanhSachUuDai;
 
 public class PhongVip extends Phong {
-    private DanhSachUuDaiVip uuDaiVip;
+    private DanhSachUuDai uuDaiVip;
 
     public PhongVip(){
         super();
@@ -17,11 +15,11 @@ public class PhongVip extends Phong {
         loaiPhong = 1;
     }
 
-    public DanhSachUuDaiVip getUuDaiVip() {
+    public DanhSachUuDai getUuDaiVip() {
         return uuDaiVip;
     }
 
-    public void setUuDaiVipClone(DanhSachUuDaiVip uuDaiVip) {
+    public void setUuDaiVipClone(DanhSachUuDai uuDaiVip) {
         try {
             this.uuDaiVip = uuDaiVip.clone();
         } catch (CloneNotSupportedException e) {

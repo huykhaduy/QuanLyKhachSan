@@ -156,6 +156,7 @@ public class DanhSachDichVu implements ConsoleIO,ChucNangDS {
     }
 
     public MyArray<DichVu> modulTimKiem(String str){
+        str = str.toLowerCase();
         MyArray<DichVu> result = new MyArray<DichVu>();
         for(int i=0;i<dsdv.getLength();i++){
             DichVu dv = dsdv.getAt(i);

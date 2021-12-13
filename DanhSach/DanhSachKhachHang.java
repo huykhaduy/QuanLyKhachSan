@@ -1,6 +1,7 @@
 package DanhSach;
 
 import Modul.KhachHang;
+import Modul.NhanVien;
 import Modul.SupportModul.DateTime;
 import Modul.SupportModul.DiaChi;
 import Modul.Error.*;
@@ -14,7 +15,7 @@ import java.util.InputMismatchException;
 import java.util.Objects;
 
 public class DanhSachKhachHang implements ChucNangDS,Modul.ConsoleIO {
-    private final MyArray<KhachHang> dskh = new MyArray<KhachHang>();
+    private MyArray<KhachHang> dskh = new MyArray<KhachHang>();
     public DanhSachKhachHang(){
     }
 
@@ -23,8 +24,8 @@ public class DanhSachKhachHang implements ChucNangDS,Modul.ConsoleIO {
         System.out.print("> Nhập thông tin cần tìm: ");
         MyArray<KhachHang> result = modulTimKiem(sc.nextLine().toLowerCase());
         if (result != null){
-            System.out.println(DanhSachKhachHang.title());
             if (result.getLength()>1){
+                System.out.println(DanhSachKhachHang.title());
                 for (int i=0;i< result.getLength();i++){
                     System.out.println(result.getAt(i));
                 }
@@ -159,49 +160,56 @@ public class DanhSachKhachHang implements ChucNangDS,Modul.ConsoleIO {
     @Override
     public void writeToFile() {
         String name = "./Data/KhachHang.txt";
-        try {
-            FileOutputStream filein = new FileOutputStream(name);
-            ObjectOutputStream fileobj = new ObjectOutputStream(filein);
-            for (int i = 0; i < dskh.getLength(); i++) {
-                KhachHang kh = dskh.getAt(i);
-                fileobj.writeObject(kh);
-            }
-            fileobj.close();
-        } catch (IOException e) {
-            System.out.println("<!> Lỗi ghi vào file " + name);
-            e.printStackTrace();
-            if (e instanceof NotSerializableException) {
-                e.printStackTrace();
-            }
-            if (e instanceof InvalidClassException) {
-                System.out.println("<!> Invalid class " + name);
-            }
-        }
+        DocGhiFile<KhachHang> write = new DocGhiFile<>(dskh);
+        write.ghiFileVaoThuMuc(name);
+//        try {
+//            FileOutputStream filein = new FileOutputStream(name);
+//            ObjectOutputStream fileobj = new ObjectOutputStream(filein);
+//            for (int i = 0; i < dskh.getLength(); i++) {
+//                KhachHang kh = dskh.getAt(i);
+//                fileobj.writeObject(kh);
+//            }
+//            fileobj.close();
+//        } catch (IOException e) {
+//            System.out.println("<!> Lỗi ghi vào file " + name);
+//            e.printStackTrace();
+//            if (e instanceof NotSerializableException) {
+//                e.printStackTrace();
+//            }
+//            if (e instanceof InvalidClassException) {
+//                System.out.println("<!> Invalid class " + name);
+//            }
+//        }
     }
 
     @Override
     public void readFromFile() {
         String name = "./Data/KhachHang.txt";
-        KhachHang kh;
-        FileInputStream fis;
-        ObjectInputStream fileobj = null;
-        try{
-            fis = new FileInputStream(name);
-            fileobj = new ObjectInputStream(fis);
-            while (true){
-                kh = (KhachHang) fileobj.readObject();
-                dskh.push(kh);
-            }
-        }  catch (IOException | ClassNotFoundException ignored) {
-        } finally {
-            try {
-                if (fileobj != null) {
-                    fileobj.close();
-                }
-            } catch (IOException e) {
-                System.out.println("");
-            }
-        }
+        DocGhiFile<KhachHang> read = new DocGhiFile<>();
+        MyArray<KhachHang> test = read.docFileTuThuMuc(name);
+        if (test != null && test.getLength()>0)
+            dskh = test;
+//        KhachHang kh;
+//        FileInputStream fis;
+//        ObjectInputStream fileobj = null;
+//        try{
+//            fis = new FileInputStream(name);
+//            fileobj = new ObjectInputStream(fis);
+//            while (true){
+//                kh = (KhachHang) fileobj.readObject();
+//                dskh.push(kh);
+//            }
+//        }  catch (IOException | ClassNotFoundException ignored) {
+//        } finally {
+//            try {
+//                if (fileobj != null) {
+//                    fileobj.close();
+//                }
+//            } catch (IOException e) {
+//                System.out.println("");
+//            }
+//        }
+
     }
 
     @Override
@@ -248,6 +256,7 @@ public class DanhSachKhachHang implements ChucNangDS,Modul.ConsoleIO {
     }
 
     public MyArray<KhachHang> modulTimKiem(String str){
+        str = str.toLowerCase();
         //Tạo mảng tạm để lưu dữ liệu
         MyArray<KhachHang> result = new MyArray<KhachHang>();
         for(int i=0;i<dskh.getLength();i++){

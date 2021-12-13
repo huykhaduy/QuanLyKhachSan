@@ -1,11 +1,13 @@
 package Modul.SupportModul;
 
 import DanhSach.MyArray;
+import Modul.NhanVien;
+
 import java.io.*;
 
 
 public class DocGhiFile<U extends Serializable> {
-    private MyArray<U> list;
+    private MyArray<U> list = new MyArray<>();
 
     public DocGhiFile() {
     }
@@ -15,38 +17,49 @@ public class DocGhiFile<U extends Serializable> {
     }
 
     public void ghiFileVaoThuMuc(String name){
-        try{
+        try {
             FileOutputStream filein = new FileOutputStream(name);
-            System.out.println("Here");
             ObjectOutputStream fileobj = new ObjectOutputStream(filein);
-            System.out.println("Here");
-            fileobj.writeObject(list);
+            for (int i = 0; i < list.getLength(); i++) {
+                U data = list.getAt(i);
+                fileobj.writeObject(data);
+            }
             fileobj.close();
         } catch (IOException e) {
-            System.out.println("<!> Lỗi ghi vào file "+name);
-            if (e instanceof NotSerializableException ){
-                System.out.println("<!> Not seriable "+name);
+            System.out.println("<!> Lỗi ghi vào file " + name);
+            e.printStackTrace();
+            if (e instanceof NotSerializableException) {
+                e.printStackTrace();
             }
-            if (e instanceof InvalidClassException){
-                System.out.println("<!> Invalid class "+name);
+            if (e instanceof InvalidClassException) {
+                System.out.println("<!> Invalid class " + name);
             }
         }
     }
 
     @SuppressWarnings("unchecked")
     public MyArray<U> docFileTuThuMuc(String name){
-        MyArray<U> result = new MyArray<>();
+        U data;
+        FileInputStream fis;
+        ObjectInputStream fileobj = null;
         try{
-            FileInputStream fis = new FileInputStream(name);
-            ObjectInputStream fileobj = new ObjectInputStream(fis);
-            result = (MyArray<U>) fileobj.readObject();
-            fileobj.close();
-
-        } catch (IOException | ClassNotFoundException e) {
-            System.out.println("Lỗi đọc dữ liệu từ file "+name);
-            return null;
+            fis = new FileInputStream(name);
+            fileobj = new ObjectInputStream(fis);
+            while (true){
+                data = (U) fileobj.readObject();
+                if (data != null)
+                    list.push(data);
+            }
+        } catch (IOException | ClassNotFoundException ignored) {
+        } finally {
+            try {
+                if (fileobj != null) {
+                    fileobj.close();
+                }
+            } catch (IOException e) {
+                System.out.println("");
+            }
         }
-        return result;
+        return list;
     }
-
 }

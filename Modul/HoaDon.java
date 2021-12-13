@@ -2,7 +2,6 @@ package Modul;
 
 import Modul.SupportModul.DateTime;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 
 public class HoaDon extends Phieu implements ConsoleIO{
@@ -88,7 +87,7 @@ public class HoaDon extends Phieu implements ConsoleIO{
     // Variable of abtract
 
 
-    public int getMaPhong() {
+    public Phong getMaPhong() {
         return maPhong;
     }
 
@@ -97,13 +96,13 @@ public class HoaDon extends Phieu implements ConsoleIO{
         System.out.println("----------NHẬP THÔNG TIN THUÊ----------");
         System.out.print("> Nhập mã KH: ");
         //Check if khach hang ton tai do
-        super.setMaKH(sc.nextInt());
+//        super.setMaKH(sc.nextInt());
         System.out.print("> Nhập mã phòng: ");
         //Check if phòng tồn tại và trống
-        super.setMaPhong(sc.nextInt());
+//        super.setMaPhong(sc.nextInt());
         sc.nextLine();
-        phieuThue = new PhieuThue(maKH,maPhong);
-        phieuThu = new PhieuThu(maKH,maPhong);
+//        phieuThue = new PhieuThue(maKH,maPhong);
+//        phieuThu = new PhieuThu(maKH,maPhong);
         phieuThue.nhapThongTin();
 //        phieuThu.nhapThongTin();
     }

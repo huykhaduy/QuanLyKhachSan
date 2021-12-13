@@ -10,7 +10,7 @@ import Modul.SupportModul.Check;
 import Modul.SupportModul.DateTime;
 import Modul.SupportModul.DiaChi;
 
-public class DichVu implements ConsoleIO, Serializable {
+public class DichVu implements ConsoleIO, Serializable, MyCompare<DichVu>{
     protected String maDV;
     protected String tenDV;
     protected BigDecimal donGia = new BigDecimal("0");
@@ -175,6 +175,30 @@ public class DichVu implements ConsoleIO, Serializable {
         return format;
     }
 
+    @Override
+    public int compareTo(DichVu o2, int type) {
+        if (type == 1){
+            if (this.maDV.compareToIgnoreCase(o2.maDV) >1)
+                return 1;
+            return -1;
+        }
+        if (type == 2){
+            if (this.tenDV.compareToIgnoreCase(o2.tenDV)>1)
+                return 1;
+            return -1;
+        }
+        if (type == 3){
+            if (this.donGia.compareTo(o2.donGia)>1)
+                return 1;
+            return -1;
+        }
+        if (type == 4){
+            if (this.ngayTao.compareDateTime(o2.ngayTao)>0)
+                return 1;
+            return -1;
+        }
+        return 0;
+    }
 }
 
     

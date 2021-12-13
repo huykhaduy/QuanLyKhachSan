@@ -131,8 +131,8 @@ public class Phong implements ConsoleIO, Serializable {
     }
     @Override
     public void xuatThongTin(){
-        System.out.printf("|%-10s|%-10s|%-10s|%-15s|%-10s|%-10s|%-20s|\n",maPhong,maLau,soGiuong,soNguoiToiDa, tinhTrang ?"Đầy":"Trống",
-                loaiPhong==1?"VIP":"Thường",loaiPhong == 1?BangGia.getGiaPhongThuongGio():BangGia.getGiaPhongVipGio());
+//        System.out.printf("|%-10s|%-10s|%-10s|%-15s|%-10s|%-10s|%-20s|\n",maPhong,maLau,soGiuong,soNguoiToiDa, tinhTrang ?"Đầy":"Trống",
+//                loaiPhong==1?"VIP":"Thường",loaiPhong == 1?BangGia.getGiaPhongThuongGio():BangGia.getGiaPhongVipGio());
     }
 
     public void suaThongTin(){

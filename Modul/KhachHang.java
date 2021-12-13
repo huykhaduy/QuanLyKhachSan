@@ -90,32 +90,32 @@ public class KhachHang extends ConNguoi implements ConsoleIO, MyCompare<KhachHan
             return -1;
         }
         //So sánh tên
-        else if (type == 1){
+        if (type == 1){
             if (this.name.compareToIgnoreCase(o2.name)>0)
                 return 1;
             return -1;
         }
         //So sánh cmnd
-        else if (type == 2){
+        if (type == 2){
             if (this.cmnd.compareToIgnoreCase(o2.cmnd)>0)
                 return 1;
             return -1;
         }
 
         //So sánh số điện thoại
-        else if (type == 3 ){
+        if (type == 3 ){
             if (this.soDienThoai.compareToIgnoreCase(o2.soDienThoai)>0)
                 return 1;
             return -1;
         }
         //So sánh số ngay sinh
-        else if (type == 4){
+        if (type == 4){
             if (this.ngaySinh.compareDateTime(o2.ngaySinh)>0)
                 return 1;
             return -1;
         }
         //So sánh số ngày tạo tài khoản
-        else if (type == 5){
+        if (type == 5){
             if (this.ngayThamGia.compareDateTime(o2.ngayThamGia)>0)
                 return 1;
             return -1;

@@ -3,8 +3,11 @@ package DanhSach;
 import Modul.*;
 import Modul.Error.InvalidNumberException;
 import Modul.Error.NotExsitException;
+import Modul.SupportModul.MySort;
 
+import java.io.*;
 import java.util.InputMismatchException;
+import java.util.Objects;
 
 public class DanhSachNhanVien implements ChucNangDS,Modul.ConsoleIO{
     private MyArray<NhanVien> dsnv = new MyArray<NhanVien>();
@@ -18,13 +21,19 @@ public class DanhSachNhanVien implements ChucNangDS,Modul.ConsoleIO{
 
     @Override
     public void timKiem() {
-        System.out.print("> Nhập thông tin khách hàng cần tìm: ");
+        System.out.print("> Nhập thông tin nhân viên cần tìm: ");
         MyArray<NhanVien> result = modulTimKiem(sc.nextLine().toLowerCase());
         if (result != null){
-//            System.out.println(DanhSachKhachHang.title());
-            for (int i=0;i< result.getLength();i++){
-                System.out.println(result.getAt(i));
+            if (result.getLength()>1){
+                System.out.println(DanhSachNhanVien.title());
+                for (int i=0;i< result.getLength();i++){
+                    System.out.println(result.getAt(i).toString());
+                }
             }
+            else {
+                result.getAt(0).xuatThongTin();
+            }
+
         }
         else {
             System.out.println("<!> Không tìm thấy kết quả nào!");
@@ -133,7 +142,35 @@ public class DanhSachNhanVien implements ChucNangDS,Modul.ConsoleIO{
 
     @Override
     public void sapXep() {
-
+        System.out.println();
+        System.out.println(Text.center("SẮP XẾP DANH SÁCH NHÂN VIÊN",40,'-'));
+        System.out.println(" 1. Theo mã mã nhân viên (asc/desc)");
+        System.out.println(" 2. Theo tên nhân viên (asc/desc)");
+        System.out.println(" 3. Theo CCCD/CMND (asc/desc)");
+        System.out.println(" 4. Theo số điện thoại (asc/desc)");
+        System.out.println(" 5. Theo ngày sinh (asc/desc)");
+        System.out.println(" 6. Theo ngày tạo (asc/desc)");
+        System.out.println(" 7. Theo chức vụ (asc/desc)");
+        System.out.println("(Lựa chọn gồm số + asc hay desc, vd: 1asc hay 2desc");
+        System.out.print("> Lựa chọn của bạn: ");
+        String choice = sc.nextLine();
+        if (choice.length()<2){
+            System.out.println("<!> Lựa chọn không hợp lệ!");
+            return;
+        }
+        int select = choice.charAt(0)-48;
+        if (select<1 || select>7){
+            System.out.println("<!> Lựa chọn không hợp lệ!");
+            return;
+        }
+        if (choice.charAt(1) != 'a' && choice.charAt(1) != 'A' && choice.charAt(1) != 'D'&& choice.charAt(1) != 'd'){
+            System.out.println("<!> Lựa chọn không hợp lệ!");
+            return;
+        }
+        if (choice.charAt(1) == 'a' || choice.charAt(1)=='A')
+            sapXepTangDan(select-1);
+        else sapXepGiamDan(select-1);
+        xuatThongTin();
     }
 
 
@@ -158,33 +195,76 @@ public class DanhSachNhanVien implements ChucNangDS,Modul.ConsoleIO{
                 break;
             case 4: xoa();
                 break;
-            case 5: xuatThongTin();
+            case 5: sapXep();
+                break;
+            case 6: xuatThongTin();
                 break;
         }
     }
 
     @Override
     public void sapXepTangDan(int type) {
-
+        MySort<NhanVien> s = new MySort<>();
+        s.sort(dsnv,type,true);
     }
 
     @Override
     public void sapXepGiamDan(int type) {
-
+        MySort<NhanVien> s = new MySort<>();
+        s.sort(dsnv,type,false);
     }
 
     @Override
     public void writeToFile() {
-
+        String name = "./Data/NhanVien.txt";
+        try {
+            FileOutputStream filein = new FileOutputStream(name);
+            ObjectOutputStream fileobj = new ObjectOutputStream(filein);
+            for (int i = 0; i < dsnv.getLength(); i++) {
+                NhanVien nv = dsnv.getAt(i);
+                fileobj.writeObject(nv);
+            }
+            fileobj.close();
+        } catch (IOException e) {
+            System.out.println("<!> Lỗi ghi vào file " + name);
+            e.printStackTrace();
+            if (e instanceof NotSerializableException) {
+                e.printStackTrace();
+            }
+            if (e instanceof InvalidClassException) {
+                System.out.println("<!> Invalid class " + name);
+            }
+        }
     }
 
     @Override
     public void readFromFile() {
-
+        String name = "./Data/NhanVien.txt";
+        NhanVien kh;
+        FileInputStream fis;
+        ObjectInputStream fileobj = null;
+        try{
+            fis = new FileInputStream(name);
+            fileobj = new ObjectInputStream(fis);
+            while (true){
+                kh = (NhanVien) fileobj.readObject();
+                dsnv.push(kh);
+            }
+        } catch (IOException | ClassNotFoundException ignored) {
+        } finally {
+            try {
+                if (fileobj != null) {
+                    fileobj.close();
+                }
+            } catch (IOException e) {
+                System.out.println("");
+            }
+        }
     }
 
     @Override
     public void nhapThongTin() {
+        readFromFile();
         while (true){
             System.out.println();
             System.out.println(Text.center("DANH SÁCH NHÂN VIÊN",40,'-'));
@@ -192,30 +272,34 @@ public class DanhSachNhanVien implements ChucNangDS,Modul.ConsoleIO{
             System.out.println("|"+Text.leftAt(10,Text.setLength("2. Tìm nhân viên",27),' ')+"|");
             System.out.println("|"+Text.leftAt(10,Text.setLength("3. Sửa nhân viên",27),' ')+"|");
             System.out.println("|"+Text.leftAt(10,Text.setLength("4. Xóa nhân viên",27),' ')+"|");
-            System.out.println("|"+Text.leftAt(10,Text.setLength("5. Xem danh sách",27),' ')+"|");
-            System.out.println("|"+Text.leftAt(10,Text.setLength("6. Thoát",27),' ')+"|");
+            System.out.println("|"+Text.leftAt(10,Text.setLength("5. Sắp xếp danh sách",27),' ')+"|");
+            System.out.println("|"+Text.leftAt(10,Text.setLength("6. Xem danh sách",27),' ')+"|");
+            System.out.println("|"+Text.leftAt(10,Text.setLength("7. Lưu và thoát",27),' ')+"|");
             System.out.println(Text.center("",40,'-'));
             System.out.print("> Nhập lựa chọn: ");
             int value =0;
             try{
                 value = sc.nextInt();
-                if (value <1 || value>6) throw new InvalidNumberException("Vui lòng chọn số từ 1-6");
+                if (value <1 || value>7) throw new InvalidNumberException("Vui lòng chọn số từ 1-7");
             } catch (InputMismatchException e){
                 System.out.println("<!> Lỗi: Vui lòng nhập số !");
             } catch (InvalidNumberException e) {
-                System.out.println(e);
+                System.out.println(e.toString());
             }
             finally {
                 sc.nextLine();
             }
-            if (value == 6) break;
+            if (value == 7) {
+                writeToFile();
+                break;
+            }
             xuLy(value);
         }
     }
 
     @Override
     public void xuatThongTin() {
-        System.out.println(DanhSachKhachHang.title());
+        System.out.println(DanhSachNhanVien.title());
         for (int i=0;i< dsnv.getLength();i++){
             System.out.println(dsnv.getAt(i).toString());
         }
@@ -249,9 +333,9 @@ public class DanhSachNhanVien implements ChucNangDS,Modul.ConsoleIO{
     }
 
     public static String title(){
-        String header = Text.center("",128,'-');
-        String format = String.format("|%10s|%20s|%15s|%15s|%15s|%15s|%30s|","MaNV","Tên NV","Ngày sinh","CCCD/CMND","SDT","Ngày tạo","Địa chỉ");
-        String footer = Text.center("",128,'-');
+        String header = Text.center("",144,'-');
+        String format = String.format("|%10s|%20s|%15s|%15s|%15s|%15s|%15s|%30s|","Mã NV","Tên NV","Chức vụ","Ngày sinh","CCCD/CMND","SDT","Ngày tạo","Địa chỉ");
+        String footer = Text.center("",144,'-');
         return header+"\n"+format+"\n"+footer;
     }
 }

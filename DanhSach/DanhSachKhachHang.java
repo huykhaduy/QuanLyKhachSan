@@ -24,9 +24,15 @@ public class DanhSachKhachHang implements ChucNangDS,Modul.ConsoleIO {
         MyArray<KhachHang> result = modulTimKiem(sc.nextLine().toLowerCase());
         if (result != null){
             System.out.println(DanhSachKhachHang.title());
-            for (int i=0;i< result.getLength();i++){
-                System.out.println(result.getAt(i));
+            if (result.getLength()>1){
+                for (int i=0;i< result.getLength();i++){
+                    System.out.println(result.getAt(i));
+                }
             }
+            else {
+                result.getAt(0).xuatThongTin();
+            }
+
         }
         else {
             System.out.println("<!> Không tìm thấy kết quả nào!");
@@ -83,7 +89,7 @@ public class DanhSachKhachHang implements ChucNangDS,Modul.ConsoleIO {
         System.out.println();
         System.out.println(Text.center("SẮP XẾP DANH SÁCH KHÁCH HÀNG",40,'-'));
         System.out.println(" 1. Theo mã khách hàng (asc/desc)");
-        System.out.println(" 2. Tên khách hàng (asc/desc)");
+        System.out.println(" 2. Theo Tên khách hàng (asc/desc)");
         System.out.println(" 3. Theo CCCD/CMND (asc/desc)");
         System.out.println(" 4. Theo số điện thoại (asc/desc)");
         System.out.println(" 5. Theo ngày sinh (asc/desc)");
@@ -152,7 +158,7 @@ public class DanhSachKhachHang implements ChucNangDS,Modul.ConsoleIO {
 
     @Override
     public void writeToFile() {
-        String name = "khachhang.txt";
+        String name = "./Data/KhachHang.txt";
         try {
             FileOutputStream filein = new FileOutputStream(name);
             ObjectOutputStream fileobj = new ObjectOutputStream(filein);
@@ -175,7 +181,7 @@ public class DanhSachKhachHang implements ChucNangDS,Modul.ConsoleIO {
 
     @Override
     public void readFromFile() {
-        String name = "khachhang.txt";
+        String name = "./Data/KhachHang.txt";
         KhachHang kh;
         FileInputStream fis;
         ObjectInputStream fileobj = null;
@@ -186,15 +192,14 @@ public class DanhSachKhachHang implements ChucNangDS,Modul.ConsoleIO {
                 kh = (KhachHang) fileobj.readObject();
                 dskh.push(kh);
             }
-        } catch (ClassNotFoundException | IOException e) {
-//            if (e instanceof EOFException){
-//                System.out.println(" <!>Đọc file thành công !");
-//            }
+        }  catch (IOException | ClassNotFoundException ignored) {
         } finally {
             try {
-                Objects.requireNonNull(fileobj).close();
+                if (fileobj != null) {
+                    fileobj.close();
+                }
             } catch (IOException e) {
-                e.printStackTrace();
+                System.out.println("");
             }
         }
     }

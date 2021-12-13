@@ -65,10 +65,11 @@ public abstract class NhanVien extends ConNguoi implements MyCompare<NhanVien>, 
     }
 
     public void xuatThongTin(){
-        System.out.println(Text.center("THÔNG TIN NHÂN VIÊN",80,'-'));
+        System.out.println(Text.center("THÔNG TIN NHÂN VIÊN",40,'-'));
         System.out.println(" - Mã nhân viên: "+getMaNVStr());
-        System.out.println(" - Ngày tham gia: "+ngayThamGia.toStringNgay());
+        System.out.println(" - Chức vụ: "+ getChucVuStr());
         super.xuatThongTin();
+        System.out.println(" - Ngày tham gia: "+ngayThamGia.toStringNgay());
     }
 
 //    public void suaThongTin(){
@@ -137,11 +138,17 @@ public abstract class NhanVien extends ConNguoi implements MyCompare<NhanVien>, 
 
     public abstract void lamViec();
     public abstract int getChucVu();
+    public String getChucVuStr(){
+        String[] chucVu = {"Lễ tân","Quản lý","Admin"};
+        int index = (int) Math.log10(getChucVu());
+        return chucVu[index];
+    }
+
     public abstract void suaThuocTinhCuaChucVu();
 
     @Override
     public String toString(){
-        String format = String.format("|%10s|%20s|%15s|%15s|%15s|%15s|%30s|",maNVStr,name,ngaySinh.toStringNgay(),cmnd,soDienThoai,ngayThamGia.toStringNgay(),diaChi);
+        String format = String.format("|%10s|%20s|%15s|%15s|%15s|%15s|%15s|%30s|",maNVStr,name,getChucVuStr(),ngaySinh.toStringNgay(),cmnd,soDienThoai,ngayThamGia.toStringNgay(),diaChi);
         return format;
     }
 
@@ -153,30 +160,42 @@ public abstract class NhanVien extends ConNguoi implements MyCompare<NhanVien>, 
             return -1;
         }
         //So sánh tên
-        else if (type == 1){
+        if (type == 1){
             if (this.name.compareToIgnoreCase(o2.name)>0)
                 return 1;
             return -1;
         }
         //So sánh cmnd
-        else if (type == 2){
+        if (type == 2){
             if (this.cmnd.compareToIgnoreCase(o2.cmnd)>0)
                 return 1;
             return -1;
         }
 
         //So sánh số điện thoại
-        else if (type == 3 ){
+        if (type == 3 ){
             if (this.soDienThoai.compareToIgnoreCase(o2.soDienThoai)>0)
                 return 1;
             return -1;
         }
         //So sánh số ngay sinh
-        else if (type == 4){
-            if (this.ngaySinh.toStringNgay().compareToIgnoreCase(o2.ngaySinh.toStringNgay())>0)
+        if (type == 4){
+            if (this.ngaySinh.compareDateTime(o2.ngayThamGia)>0)
                 return 1;
             return -1;
         }
+        //So sánh số ngày tạo tài khoản
+       if (type == 5){
+            if (this.ngayThamGia.compareDateTime(o2.ngayThamGia)>0)
+                return 1;
+            return -1;
+       }
+       if (type == 6){
+           if (this.getChucVu() > o2.getChucVu()){
+               return 1;
+           }
+           return -1;
+       }
         return 0;
     }
 }

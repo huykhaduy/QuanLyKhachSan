@@ -6,6 +6,14 @@ import Modul.HoaDon;
 public class DanhSachHoaDon implements ChucNangDS, ConsoleIO {
     private MyArray<HoaDon> dshd = new MyArray<HoaDon>();
 
+    public MyArray<HoaDon> getDshdArr() {
+        return dshd;
+    }
+
+    public void setDshdArr(MyArray<HoaDon> dshd) {
+        this.dshd = dshd;
+    }
+
     @Override
     public void timKiem() {
 

@@ -2,6 +2,7 @@ package Modul;
 
 import java.math.BigDecimal;
 
+import Controller.Program;
 import Modul.SupportModul.DateTime;
 
 public class PhieuThue extends Phieu implements ConsoleIO {
@@ -9,11 +10,12 @@ public class PhieuThue extends Phieu implements ConsoleIO {
     private int maPhieuThue;
     private DateTime startDate = new DateTime();
     private DateTime endDate = new DateTime();
-    private BigDecimal giaTien = new BigDecimal("0");
+    private BigDecimal[] giaTien;
 
     public PhieuThue() {
         super();
         maPhieuThue = ++id;
+        giaTien = new BigDecimal[3];
     }
 
     public PhieuThue(KhachHang maKH, Phong maPhong) {
@@ -21,6 +23,17 @@ public class PhieuThue extends Phieu implements ConsoleIO {
         maPhieuThue = ++id;
         this.maKH = maKH;
         this.maPhong = maPhong;
+        this.giaTien = new BigDecimal[3];
+        if (maPhong.getLoaiPhong()==1){
+            giaTien[0] = Program.getBangGia().getGiaPhongVipNgay();
+            giaTien[1] = Program.getBangGia().getGiaPhongVipGio();
+            giaTien[2] = Program.getBangGia().getGiaPhongVipPhut();
+        }
+        else if (maPhong.getLoaiPhong() == 0){
+            giaTien[0] = Program.getBangGia().getGiaPhongThuongNgay();
+            giaTien[1] = Program.getBangGia().getGiaPhongThuongGio();
+            giaTien[2] = Program.getBangGia().getGiaPhongThuongPhut();
+        }
     }
 
     public DateTime getStartDate() {
@@ -39,12 +52,12 @@ public class PhieuThue extends Phieu implements ConsoleIO {
         this.endDate = endDate;
     }
 
-    public BigDecimal getGiaTien() {
+    public BigDecimal[] getGiaTien() {
         //Calculate gia tien by giaphong multiple endDate - startDate
         return this.giaTien;
     }
 
-    public void updateGiaTien(BigDecimal giaTien) {
+    public void updateGiaTien(BigDecimal giaTien[]) {
         //Tinh toan gia tien !
         this.giaTien = giaTien;
     }

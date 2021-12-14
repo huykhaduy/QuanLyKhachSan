@@ -1,6 +1,7 @@
 
 package Modul;
 
+import Controller.Program;
 import DanhSach.DanhSachUuDai;
 
 public class PhongVip extends Phong {
@@ -25,6 +26,11 @@ public class PhongVip extends Phong {
         } catch (CloneNotSupportedException e) {
             System.out.println("Copy giá trị thất bại!");
         }
+    }
+
+    @Override
+    public void setDstn(){
+        dstn = Program.getDstnVip();
     }
 
     @Override

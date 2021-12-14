@@ -1,10 +1,13 @@
 package Modul;
 
+import Controller.Program;
+import DanhSach.DanhSachTienNghi;
 import Modul.Error.InvalidNumberException;
 import Modul.Error.InvalidStringException;
 import Modul.SupportModul.Check;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.InputMismatchException;
 
 public class Phong implements ConsoleIO, Serializable {
@@ -12,9 +15,12 @@ public class Phong implements ConsoleIO, Serializable {
     protected int maLau;
     protected int soGiuong;
     protected int soNguoiToiDa;
-    protected boolean tinhTrang;
+    protected boolean tinhTrang = false;
     protected int loaiPhong;
+    protected DanhSachTienNghi dstn;
+
     public Phong(){
+        dstn = Program.getDstnThuong();
     }
 
     public Phong(String maPhong,int maLau,int soGiuong,int soNguoiToiDa, boolean tinhTrang){
@@ -23,6 +29,7 @@ public class Phong implements ConsoleIO, Serializable {
         this.soNguoiToiDa=soNguoiToiDa;
         this.maLau= maLau;
         this.tinhTrang=tinhTrang;
+        dstn = Program.getDstnThuong();
     }
 
     public String getMaPhong() {
@@ -41,12 +48,16 @@ public class Phong implements ConsoleIO, Serializable {
         return soNguoiToiDa;
     }
 
-    public boolean isTinhTrang() {
+    public boolean getTinhTrang() {
         return tinhTrang;
     }
 
     public int getLoaiPhong() {
         return loaiPhong;
+    }
+
+    public DanhSachTienNghi getDstn() {
+        return dstn;
     }
 
     public void setMaPhong(String maPhong) throws InvalidStringException {
@@ -80,6 +91,10 @@ public class Phong implements ConsoleIO, Serializable {
 
     public void setLoaiPhong(int loaiPhong) {
         this.loaiPhong = loaiPhong;
+    }
+
+    public void setDstn() {
+        dstn = Program.getDstnThuong();
     }
 
     @Override
@@ -183,4 +198,19 @@ public class Phong implements ConsoleIO, Serializable {
             sc.nextLine();
         }
     }
+
+    public String toString(){
+        String type = getTypeStr();
+        String s = String.format("|%15s|%15s|%15s|%15s|%15s|%15s|\n",maPhong,type,maLau,soGiuong,soNguoiToiDa,tinhTrang?"Đầy":"Trống");
+        return s;
+    }
+
+    public String getTypeStr(){
+        String type = "Thường";
+        if (loaiPhong == 1){
+            type = "VIP";
+        }
+        return type;
+    }
+
 }

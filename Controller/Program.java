@@ -2,24 +2,34 @@ package Controller;
 
 import DanhSach.*;
 import Modul.BangGia;
+import Modul.TaiKhoan;
 
 public class Program {
-    static DanhSachKhachHang dskh;
-    static DanhSachNhanVien dsnv;
-    static DanhSachPhong dsphong;
-    static DanhSachDichVu dsdv;
-    static DanhSachTienNghi dstnThuong;
-    static DanhSachTienNghi dstnVip;
-    static DanhSachHoaDon dshd;
-    static DanhSachUuDai dsudThuong;
-    static DanhSachUuDai dsudVip;
-    static BangGia bangGia;
-    //Static TaiKhoan tk;
+    private static DanhSachKhachHang dskh;
+    private static DanhSachNhanVien dsnv;
+    private static DanhSachPhong dsphong;
+    private static DanhSachDichVu dsdv;
+    private static DanhSachTienNghi dstnThuong;
+    private static DanhSachTienNghi dstnVip;
+    private static DanhSachHoaDon dshd;
+    private static DanhSachUuDai dsudThuong;
+    private static DanhSachUuDai dsudVip;
+    private static DanhSachTaiKhoan dstk;
+    private static BangGia bangGia;
+    private static TaiKhoan tkLogin;
 
     public static void run(){
         Program.init();
-
-
+        Program.readFiles();
+//        dstk.themTaiKhoan("1","1","NV0001");
+//        dstk.themTaiKhoan("2","2","NV0002");
+//        dstk.themTaiKhoan("3","3","NV0003");
+//        dstk.writeToFile();
+        Program.getBangGia();
+        while (true){
+            MenuHandle.loginMenu();
+            MenuHandle.showWorkMenu();
+        }
     }
 
     public static void init(){
@@ -32,7 +42,16 @@ public class Program {
         dshd = new DanhSachHoaDon();
         dsudVip = new DanhSachUuDai();
         dsudThuong = new DanhSachUuDai();
+        dstk = new DanhSachTaiKhoan();
         bangGia = new BangGia();
+    }
+
+    public static void readFiles(){
+//        dskh.readFromFile();
+        dsnv.readFromFile();
+        dskh.readFromFile();
+        dsphong.readFromFile();
+        dstk.readFromFile();
     }
 
     public static DanhSachKhachHang getDSKH(){
@@ -71,9 +90,20 @@ public class Program {
         return dsudVip;
     }
 
+    public static DanhSachTaiKhoan getDSTK(){
+        return dstk;
+    }
+
     public static BangGia getBangGia(){
         return bangGia;
     }
 
+    public static TaiKhoan getTaikhoan(){
+        return tkLogin;
+    }
+
+    public static void setTaiKhoan(TaiKhoan tk){
+        tkLogin = tk;
+    }
 
 }

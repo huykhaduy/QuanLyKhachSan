@@ -1,5 +1,6 @@
 package Modul;
 
+import Controller.MenuHandle;
 import Modul.Error.InvalidNumberException;
 import Modul.SupportModul.DateTime;
 import Modul.SupportModul.DiaChi;
@@ -45,7 +46,7 @@ public class LeTan extends NhanVien implements ConsoleIO{
 
     @Override
     public void lamViec() {
-
+        MenuHandle.leTanMenu();
     }
 
     public int getChucVu(){

@@ -1,5 +1,6 @@
 package Modul;
 
+import Controller.MenuHandle;
 import Modul.SupportModul.DateTime;
 import Modul.SupportModul.DiaChi;
 
@@ -44,7 +45,7 @@ public class QuanLy extends NhanVien implements ConsoleIO{
 
     @Override
     public void lamViec() {
-
+        MenuHandle.quanLyMenu();
     }
 
     @Override

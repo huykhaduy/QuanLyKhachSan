@@ -1,5 +1,6 @@
 package Modul;
 
+import Controller.MenuHandle;
 import Modul.SupportModul.DateTime;
 import Modul.SupportModul.DiaChi;
 
@@ -23,7 +24,7 @@ public class Admin extends NhanVien implements ConsoleIO{
 
     @Override
     public void lamViec() {
-
+        MenuHandle.adminMenu();
     }
 
     @Override

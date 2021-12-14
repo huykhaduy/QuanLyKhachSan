@@ -18,7 +18,26 @@ public class HoaDon extends Phieu implements ConsoleIO{
     public HoaDon() {
         super();
         maHoaDon = ++id;
+        phieuThu = new PhieuThu();
+        phieuThue = new PhieuThue();
+        thoiGianThanhToan = new DateTime();
     }
+
+    public HoaDon(KhachHang maKH, Phong maPhong, NhanVien maNV) {
+        super(maKH, maPhong, maNV);
+        maHoaDon = ++id;
+        phieuThu = new PhieuThu(maKH,maPhong);
+        phieuThue = new PhieuThue(maKH,maPhong);
+        thoiGianThanhToan = new DateTime();
+    }
+
+    //    public HoaDon(){
+//        super();
+//        maHoaDon = ++id;
+//        phieuThu = new PhieuThu();
+//        phieuThue = new PhieuThue();
+//        thoiGianThanhToan = new DateTime();
+//    }
 
     public int getMaHoaDon() {
         return maHoaDon;

@@ -8,67 +8,74 @@ import java.util.Scanner;
 
 public class BangGia{
     static Scanner sc = new Scanner(System.in);
+    private boolean isSet = false;
+    private boolean isSetVip = false;
     //Gia Phong Thuong
-    private BigDecimal giaPhongThuongNgay = new BigDecimal("0");
-    private BigDecimal giaPhongThuongGio = new BigDecimal("0");
-    private BigDecimal giaPhongThuongPhut = new BigDecimal("0");
+    private BigDecimal[] giaPhongThuong = new BigDecimal[3];
     //Gia Phong Vip
-    private BigDecimal giaPhongVipNgay = new BigDecimal("0");
-    private BigDecimal giaPhongVipGio = new BigDecimal("0");
-    private BigDecimal giaPhongVipPhut= new BigDecimal("0");
+    private BigDecimal[] giaPhongVip = new BigDecimal[3];
+
+    public BangGia(){
+        giaPhongVip[0] = new BigDecimal("0");
+        giaPhongVip[1] = new BigDecimal("0");
+        giaPhongVip[2] = new BigDecimal("0");
+        giaPhongThuong[0] = new BigDecimal("0");
+        giaPhongThuong[1] = new BigDecimal("0");
+        giaPhongThuong[2] = new BigDecimal("0");
+    }
 
     public BigDecimal getGiaPhongThuongNgay() {
-        return giaPhongThuongNgay;
+        return giaPhongThuong[0];
     }
 
     public void setGiaPhongThuongNgay(BigDecimal giaPhongThuongNgay) throws InvalidNumberException {
         Check.checkGiaTien(giaPhongThuongNgay);
-        this.giaPhongThuongNgay = giaPhongThuongNgay;
+        this.giaPhongThuong[0] = giaPhongThuongNgay;
     }
 
     public BigDecimal getGiaPhongThuongGio() {
-        return giaPhongThuongGio;
+        return giaPhongThuong[1];
     }
 
     public void setGiaPhongThuongGio(BigDecimal giaPhongThuongGio) throws InvalidNumberException {
         Check.checkGiaTien(giaPhongThuongGio);
-        this.giaPhongThuongGio = giaPhongThuongGio;
+        this.giaPhongThuong[1] = giaPhongThuongGio;
     }
 
     public BigDecimal getGiaPhongThuongPhut() {
-        return giaPhongThuongPhut;
+        return giaPhongThuong[2];
     }
 
     public void setGiaPhongThuongPhut(BigDecimal giaPhongThuongPhut) throws InvalidNumberException {
         Check.checkGiaTien(giaPhongThuongPhut);
-        this.giaPhongThuongPhut = giaPhongThuongPhut;
+        this.giaPhongThuong[2] = giaPhongThuongPhut;
     }
 
     public BigDecimal getGiaPhongVipNgay() {
-        return giaPhongVipNgay;
+        return giaPhongVip[0];
     }
 
     public void setGiaPhongVipNgay(BigDecimal giaPhongVipNgay) throws InvalidNumberException {
         Check.checkGiaTien(giaPhongVipNgay);
-        this.giaPhongVipNgay = giaPhongVipNgay;
+        this.giaPhongVip[0] = giaPhongVipNgay;
     }
 
     public BigDecimal getGiaPhongVipGio() {
-        return giaPhongVipGio;
+        return giaPhongVip[1];
     }
 
     public void setGiaPhongVipGio(BigDecimal giaPhongVipGio) throws InvalidNumberException {
         Check.checkGiaTien(giaPhongVipGio);
-        this.giaPhongVipGio = giaPhongVipGio;
+        this.giaPhongVip[1] = giaPhongVipGio;
     }
 
     public BigDecimal getGiaPhongVipPhut() {
-        return giaPhongVipPhut;
+        return giaPhongVip[2];
     }
 
     public void setGiaPhongVipPhut(BigDecimal giaPhongVipPhut) throws InvalidNumberException {
         Check.checkGiaTien(giaPhongVipPhut);
-        this.giaPhongVipPhut = giaPhongVipPhut;
+        this.giaPhongVip[2] = giaPhongVipPhut;
     }
     public void thayDoiGiaTienThuong(){
         System.out.println(Text.center("BẢNG GIÁ PHÒNG THƯỜNG",40,'-'));
@@ -94,6 +101,7 @@ public class BangGia{
                 System.out.println(e.toString());
             }
         } while (step<4);
+        isSet = true;
     }
 
     public void thayDoiGiaTienVip(){
@@ -120,18 +128,20 @@ public class BangGia{
                 System.out.println(e.toString());
             }
         } while (step<4);
+        isSetVip = true;
     }
 
     public void hienThiGiaTienThuong(){
         System.out.println(Text.center("BẢNG GIÁ PHÒNG THƯỜNG",40,'-'));
-        System.out.println("Giá phòng theo ngày: "+giaPhongThuongNgay);
-        System.out.println("Giá phòng theo giờ: "+giaPhongThuongGio);
-        System.out.println("Giá phòng theo ngày: "+giaPhongThuongPhut);
+        System.out.println("Giá phòng theo ngày: "+giaPhongThuong[0]);
+        System.out.println("Giá phòng theo giờ: "+giaPhongThuong[1]);
+        System.out.println("Giá phòng theo ngày: "+giaPhongThuong[2]);
+
     }
     public void hienThiGiaTienVip(){
         System.out.println(Text.center("BẢNG GIÁ PHÒNG VIP",40,'-'));
-        System.out.println("Giá phòng theo ngày: "+giaPhongVipNgay);
-        System.out.println("Giá phòng theo giờ: "+giaPhongVipGio);
-        System.out.println("Giá phòng theo ngày: "+giaPhongVipPhut);
+        System.out.println("Giá phòng theo ngày: "+giaPhongVip[1]);
+        System.out.println("Giá phòng theo giờ: "+giaPhongVip[2]);
+        System.out.println("Giá phòng theo ngày: "+giaPhongVip[3]);
     }
 }

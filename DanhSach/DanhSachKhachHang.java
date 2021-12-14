@@ -19,6 +19,14 @@ public class DanhSachKhachHang implements ChucNangDS,Modul.ConsoleIO {
     public DanhSachKhachHang(){
     }
 
+    public MyArray<KhachHang> getDskhArr() {
+        return dskh;
+    }
+
+    public void setDskhArr(MyArray<KhachHang> dskh) {
+        this.dskh = dskh;
+    }
+
     @Override
     public void timKiem() {
         System.out.print("> Nhập thông tin cần tìm: ");

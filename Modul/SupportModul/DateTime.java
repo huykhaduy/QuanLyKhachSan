@@ -20,6 +20,14 @@ public class DateTime implements Serializable {
     public DateTime() {
     }
 
+//    public LocalDateTime getMyDateTime() {
+//        return myDateTime;
+//    }
+//
+//    public void setMyDateTime(LocalDateTime myDateTime) {
+//        this.myDateTime = myDateTime;
+//    }
+
     public void nhapNgayGio() {
         System.out.println("\n--------------------------NHẬP NGÀY VÀ GIỜ-------------------");
         System.out.println("(Nếu không nhập hoặc nhập sai sẽ tựng dộng lấy thời gian hiện tại)");

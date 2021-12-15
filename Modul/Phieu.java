@@ -3,6 +3,7 @@ package Modul;
 import Modul.SupportModul.DateTime;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 
 public abstract class Phieu implements Serializable {
@@ -22,9 +23,42 @@ public abstract class Phieu implements Serializable {
         ngayTaoPhieu.setCurrentTime();
     }
 
+    public KhachHang getMaKH() {
+        return maKH;
+    }
+
+    public void setMaKH(KhachHang maKH) {
+        this.maKH = maKH;
+    }
+
+    public Phong getMaPhong() {
+        return maPhong;
+    }
+
+    public void setMaPhong(Phong maPhong) {
+        this.maPhong = maPhong;
+    }
+
+    public NhanVien getMaNV() {
+        return maNV;
+    }
+
+    public void setMaNV(NhanVien maNV) {
+        this.maNV = maNV;
+    }
+
+    public DateTime getNgayTaoPhieu() {
+        return ngayTaoPhieu;
+    }
+
+    public void setNgayTaoPhieu(DateTime ngayTaoPhieu) {
+        this.ngayTaoPhieu = ngayTaoPhieu;
+    }
+
     public abstract void nhapThongTin();
     
     public abstract void xuatThongTin();
 
+    public abstract BigDecimal tinhTien();
 
 }

@@ -1,28 +1,27 @@
 package DanhSach;
 
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
-import Modul.Phong;
+import Modul.*;
+import Modul.Error.InvalidNumberException;
+import Modul.Error.NotExsitException;
 import Modul.SupportModul.DocGhiFile;
-import Modul.TaiKhoan;
+import Modul.SupportModul.MySort;
 
-public class DanhSachTaiKhoan implements ChucNangDS{
-		public MyArray<TaiKhoan> dstk = new MyArray<>();
-		
-		public DanhSachTaiKhoan() {
-			dstk = new MyArray<>();
-//			TaiKhoan tkmd = new TaiKhoan("duy","123","admin");
-//			dstk.add(tkmd);
-//			TaiKhoan tkmd1 = new TaiKhoan("DUY","1234","letan");
-//			dstk.add(tkmd1);
-		}	
-		public DanhSachTaiKhoan(MyArray<TaiKhoan> dstk) {
-			this.dstk = dstk;
-		}
+public class DanhSachTaiKhoan implements ChucNangDS, ConsoleIO {
+	public MyArray < TaiKhoan > dstk = new MyArray < > ();
 
-	public TaiKhoan layDuLieuTk(String username){
-		for (int i=0;i<dstk.getLength();i++){
+	public DanhSachTaiKhoan() {
+		dstk = new MyArray < > ();
+	}
+	public DanhSachTaiKhoan(MyArray < TaiKhoan > dstk) {
+		this.dstk = dstk;
+	}
+
+	public TaiKhoan layDuLieuTk(String username) {
+		for (int i = 0; i < dstk.getLength(); i++) {
 			TaiKhoan tk = dstk.getAt(i);
 			if (tk.getTenDangNhap().equalsIgnoreCase(username))
 				return tk;
@@ -30,162 +29,216 @@ public class DanhSachTaiKhoan implements ChucNangDS{
 		return null;
 	}
 
-	public void themTaiKhoan(String username,String password){
-		dstk.push(new TaiKhoan(username,password));
+	public void themTaiKhoan(String username, String password, String maNV) {
+		dstk.push(new TaiKhoan(username, password, maNV));
 	}
 
-	public void themTaiKhoan(String username,String password, String maNV){
-		dstk.push(new TaiKhoan(username,password,maNV));
+	public int getLargestId() {
+		int max = 0;
+		for (int i = 0; i < dstk.getLength(); i++) {
+			if (max < dstk.getAt(i).getAccountid())
+				max = dstk.getAt(i).getAccountid();
+		}
+		return max;
 	}
 
-//		public static void themTaiKhoan() {
-//			Scanner sc = new Scanner(System.in);
-//			System.out.print("Tên đăng nhập ");
-//			String tenDangNhap = sc.nextLine();
-//			System.out.print("Mật khẩu: ");
-//			String matKhau = sc.nextLine();
-//			System.out.println("chọn vai trò (1)admin (2)quản lý (3)lễ tân ");
-//			String chon = sc.nextLine();
-//			String vaiTro = null;
-//			switch (chon){
-//			case "1":
-//				vaiTro = "admin";
-//				break;
-//			case "2":
-//				vaiTro = "quanly";
-//				break;
-//			case "3":
-//				vaiTro = "letan";
-//				break;
-//			}
-//			TaiKhoan tk = new TaiKhoan(tenDangNhap,matKhau,vaiTro);
-//			dstk.add(tk);
-//		}
-		public void suaTaiKhoan(){
-			
+	@Override
+	public void timKiem() {
+		System.out.print("> Nhập thông tin nhân viên cần tìm: ");
+		MyArray < TaiKhoan > result = modulTimKiem(sc.nextLine().toLowerCase());
+		if (result != null) {
+			if (result.getLength() > 1) {
+				System.out.println(DanhSachTaiKhoan.title());
+				for (int i = 0; i < result.getLength(); i++) {
+					System.out.println(result.getAt(i).toString());
+				}
+			} else {
+				result.getAt(0).xuatThongTin();
+			}
+		} else {
+			System.out.println("<!> Không tìm thấy kết quả nào!");
 		}
-		public void xoaTaiKhoan() {
-			
+	}
+	@Override
+	public void them() {
+		TaiKhoan tk = new TaiKhoan();
+		tk.nhapThongTin();
+		dstk.push(tk);
+		writeToFile();
+	}
+
+	@Override
+	public void xoa() {
+		System.out.print("> Nhập tài khoản muốn xóa: ");
+		TaiKhoan tk;
+		tk = layDuLieuTk(sc.nextLine().toLowerCase());
+		if (tk == null) {
+			System.out.println("<!> Lỗi: Không tìm thấy tài khoản!");
+			return;
+		}
+		System.out.print("> Bạn muốn xóa tài khoản: " + tk.getTenDangNhap() + " (y/n)? ");
+		char isDel = 'n';
+		try {
+			isDel = sc.nextLine().charAt(0);
+		} catch (InputMismatchException e) {
+			System.out.println("<!> Lựa chọn không hợp lệ!");
+		}
+		if (isDel == 'y' || isDel == 'Y') {
+			dstk.removeAt(dstk.indexOf(tk));
+			System.out.println("<!> Xóa thành công phòng!");
+		}
+		writeToFile();
+	}
+
+	@Override
+	public void sua() {
+		System.out.print("> Nhập tài khoản muốn sửa: ");
+		TaiKhoan kh;
+		kh = layDuLieuTk(sc.nextLine().toLowerCase());
+		if (kh == null) {
+			System.out.println("<!> Lỗi: Không tìm thấy tài khoản!");
+			return;
+		}
+		System.out.println(" Bạn đang sửa thông tin của: " + kh.getTenDangNhap());
+		kh.suaThongTin();
+		writeToFile();
+	}
+
+	@Override
+	public void sapXep() {
+		System.out.println();
+		System.out.println(Text.center("SẮP XẾP DANH SÁCH TÀI KHOẢN", 40, '-'));
+		System.out.println(" 1. Theo tên đăng nhập (asc/desc)");
+		System.out.println(" 2. Theo ngày tạo (asc/desc)");
+		System.out.println("(Lựa chọn gồm số + asc hay desc, vd: 1asc hay 2desc");
+		System.out.print("> Lựa chọn của bạn: ");
+		String choice = sc.nextLine();
+		if (choice.length() < 2) {
+			System.out.println("<!> Lựa chọn không hợp lệ!");
+			return;
+		}
+		int select = choice.charAt(0) - 48;
+		if (select < 1 || select > 2) {
+			System.out.println("<!> Lựa chọn không hợp lệ!");
+			return;
+		}
+		if (choice.charAt(1) != 'a' && choice.charAt(1) != 'A' && choice.charAt(1) != 'D' && choice.charAt(1) != 'd') {
+			System.out.println("<!> Lựa chọn không hợp lệ!");
+			return;
+		}
+		if (choice.charAt(1) == 'a' || choice.charAt(1) == 'A')
+			sapXepTangDan(select);
+		else sapXepGiamDan(select);
+		xuatThongTin();
+
+	}
+	@Override
+	public void xuLy(int choice) {
+		switch (choice) {
+			case 1:
+				them();
+				break;
+			case 2:
+				timKiem();
+				break;
+			case 3:
+				sua();
+				break;
+			case 4:
+				xoa();
+				break;
+			case 5:
+				sapXep();
+				break;
+			case 6:
+				xuatThongTin();
+				break;
 		}
 
+	}
+	@Override
+	public void sapXepTangDan(int type) {
+		MySort < TaiKhoan > s = new MySort < TaiKhoan > ();
+		s.sort(dstk, type, true);
+	}
+	@Override
+	public void sapXepGiamDan(int type) {
+		MySort < TaiKhoan > s = new MySort < TaiKhoan > ();
+		s.sort(dstk, type, false);
+	}
+	@Override
+	public void writeToFile() {
+		String name = "./Data/TaiKhoan.txt";
+		DocGhiFile < TaiKhoan > ghi = new DocGhiFile < TaiKhoan > (dstk);
+		ghi.ghiFileVaoThuMuc(name);
+	}
+	@Override
+	public void readFromFile() {
+		String name = "./Data/TaiKhoan.txt";
+		DocGhiFile < TaiKhoan > doc = new DocGhiFile < TaiKhoan > ();
+		dstk = doc.docFileTuThuMuc(name);
+	}
 
 
-//		public void showDSTk() {
-//			System.out.format("%-30s%-30s\n","-----------------------------Danh Sách tài khoản","-----------------------------");
-//			System.out.format("%s%-19s%s%-30s%s%-30s%s\n","|","ID","|","Tên ĐN","|","Mật Khẩu","|");
-//			for(TaiKhoan tk : dstk) {
-//				tk.show();
-//			}
-//		}
-//		//kiểm tra tài khoản
-//		public boolean checkLogin(String ten, String mk, int d) {
-//			for(int i=0; i<dstk.size(); i++) {
-//				if(ten.equals(dstk.get(i).getTenDangNhap()) && mk.equals(dstk.get(i).getMatKhau())) {
-//					d = i;
-//					return true;
-//				}
-//			}
-//			return false;
-//		}
-//		// tìm tài khoản theo mã nhân viên
-//		public int timTheoMaNV(String maNV) {
-//			int d=-1;
-////			for(int i=0; i< dsNV.size() ;i++) {
-////				if(maNV == dsNV.get(i).getMaNV() ) {
-////					d = i;
-////				}
-////			}
-//			return d;
-//		}
-//		public int timTheoTen(String ten) {
-//			int d=-1;
-////			for(int i=0; i< dsNV.size() ;i++) {
-////				if(ten == dsNV.get(i).getTen() ) {
-////					d = i;
-////				}
-////			}
-//			return d;
-//		}
-//		public void logIn() {
-//			boolean login = false;
-//			int tkLogin = -1;
-//			do {
-//				Scanner sc = new Scanner(System.in);
-//				System.out.format("%-20s%-50s\n","","|---------------Đăng nhập---------------|");
-//				System.out.format("%-20s","");
-//				System.out.print("Tên đăng nhập :");
-//				String ttk = sc.nextLine();
-//				System.out.format("%-20s","");
-//				System.out.print("Mật khẩu      :");
-//				String mk = sc.nextLine();
-//				if(this.checkLogin(ttk, mk, tkLogin)) {
-//					login = true;
-//				}else {
-//					System.out.println("Tài khoản không tồn tại!");
-//					System.out.print("Chọn : (1)Đăng nhập lại 		(2)Thoát ");
-//					int chon =  sc.nextInt();
-//					if(chon==2) {
-//						break;
-//					}
-//				}
-//			}while(login==false);
-//			do {
-//				dstk.get(tkLogin).menu(login);;
-//			}while(login);
-//		}
-		@Override
-		public void timKiem() {
-			// TODO Auto-generated method stub
-			
+	@Override
+	public void nhapThongTin() {
+		while (true) {
+			System.out.println();
+			System.out.println(Text.center("DANH SÁCH TÀI KHOẢN", 40, '-'));
+			System.out.println("|" + Text.leftAt(10, Text.setLength("1. Thêm tài khoản", 27), ' ') + "|");
+			System.out.println("|" + Text.leftAt(10, Text.setLength("2. Tìm tài khoản", 27), ' ') + "|");
+			System.out.println("|" + Text.leftAt(10, Text.setLength("3. Sửa tài khoản", 27), ' ') + "|");
+			System.out.println("|" + Text.leftAt(10, Text.setLength("4. Xóa xóa tài khoản", 27), ' ') + "|");
+			System.out.println("|" + Text.leftAt(10, Text.setLength("5. Sắp xếp danh sách", 27), ' ') + "|");
+			System.out.println("|" + Text.leftAt(10, Text.setLength("6. Xem danh sách", 27), ' ') + "|");
+			System.out.println("|" + Text.leftAt(10, Text.setLength("7. Lưu và thoát", 27), ' ') + "|");
+			System.out.println(Text.center("", 40, '-'));
+			System.out.print("> Nhập lựa chọn: ");
+			int value = 0;
+			try {
+				value = sc.nextInt();
+				if (value < 1 || value > 7) throw new InvalidNumberException("Vui lòng chọn số từ 1-7");
+			} catch (InputMismatchException e) {
+				System.out.println("<!> Lỗi: Vui lòng nhập số !");
+			} catch (InvalidNumberException e) {
+				System.out.println(e.toString());
+			} finally {
+				sc.nextLine();
+			}
+			if (value == 7) {
+				writeToFile();
+				break;
+			}
+			xuLy(value);
 		}
-		@Override
-		public void them() {
-			// TODO Auto-generated method stub
-			
-		}
-		@Override
-		public void xoa() {
-			// TODO Auto-generated method stub
-			
-		}
-		@Override
-		public void sua() {
-			// TODO Auto-generated method stub
-			
-		}
-		@Override
-		public void sapXep() {
-			// TODO Auto-generated method stub
-			
-		}
-		@Override
-		public void xuLy(int choice) {
-			// TODO Auto-generated method stub
-			
-		}
-		@Override
-		public void sapXepTangDan(int type) {
-			// TODO Auto-generated method stub
-			
-		}
-		@Override
-		public void sapXepGiamDan(int type) {
-			// TODO Auto-generated method stub
-			
-		}
-		@Override
-		public void writeToFile() {
-			String name = "./Data/TaiKhoan.txt";
-			DocGhiFile<TaiKhoan> ghi = new DocGhiFile<TaiKhoan>(dstk);
-			ghi.ghiFileVaoThuMuc(name);
-		}
-		@Override
-		public void readFromFile() {
-			String name = "./Data/TaiKhoan.txt";
-			DocGhiFile<TaiKhoan> doc = new DocGhiFile<TaiKhoan>();
-			dstk = doc.docFileTuThuMuc(name);
-			
-		}
+	}
 
+	@Override
+	public void xuatThongTin() {
+		System.out.println(title());
+		for (int i = 0; i < dstk.getLength(); i++) {
+			System.out.println(dstk.getAt(i).toString());
+		}
+	}
+
+	public MyArray < TaiKhoan > modulTimKiem(String str) {
+		str = str.toLowerCase();
+		//Tạo mảng tạm để lưu dữ liệu
+		MyArray < TaiKhoan > result = new MyArray < TaiKhoan > ();
+		for (int i = 0; i < dstk.getLength(); i++) {
+			TaiKhoan tk = dstk.getAt(i);
+			if (tk.getTenDangNhap().toLowerCase().contains(str) || tk.getNgayTao().toStringNgay().contains(str)) {
+				result.push(tk);
+			}
+		}
+		if (result.getLength() == 0) return null;
+		return result;
+	}
+
+	public static String title() {
+		String header = Text.center("", 64, '-');
+		String format = String.format("|%20s|%20s|%20s|", "Tên tài khoản", "Mật khẩu", "Ngày tạo");
+		String footer = Text.center("", 64, '-');
+		return header + "\n" + format + "\n" + footer;
+	}
 }
-

@@ -1,86 +1,145 @@
 package Modul;
 
+import Controller.Program;
+import DanhSach.DanhSachDichVu;
+import DanhSach.DanhSachUuDai;
+import DanhSach.MyArray;
+import Modul.Error.InvalidNumberException;
+
 import java.math.BigDecimal;
-import java.util.LinkedList;
+import java.util.InputMismatchException;
 
 public class PhieuThu extends Phieu implements ConsoleIO{
-    private static int id = 0;
-    private int maPhieuThu;
-    private LinkedList<ChiTietDichVu> dsdv = new LinkedList<ChiTietDichVu>();
+    private MyArray<ChiTietDichVu> dsdv = new MyArray<>();
     private BigDecimal tongTien = new BigDecimal("0");
 
     public PhieuThu() {
         super();
-        maPhieuThu = ++id;
     }
 
     public PhieuThu(KhachHang maKH,Phong maPhong) {
         super();
-        maPhieuThu = ++id;
         this.maKH = maKH;
         this.maPhong = maPhong;
     }
 
     public void themDichVu() {
-        dsdv.add(new ChiTietDichVu());
-        dsdv.getLast().nhapThongTin();
+        ChiTietDichVu ct = new ChiTietDichVu();
+        ct.nhapThongTin();
+        dsdv.push(ct);
         updateTongTien();
     }
     
     public void xoaDichVu() {
-        dsdv.removeLast();
-        updateTongTien();
+        System.out.print("> Nhập mã dịch vụ muốn xóa: ");
+        String madv = sc.nextLine();
+        for (int i=0;i<dsdv.getLength();i++){
+            if (madv.equalsIgnoreCase(dsdv.getAt(i).getMaDV())){
+                dsdv.removeAt(i);
+                System.out.println("<!> Xóa dịch vụ thành công");
+                break;
+            }
+        }
     }
     
     public void updateTongTien() {
-        BigDecimal sum = new BigDecimal("0");
-        for (ChiTietDichVu ct : dsdv) {
-            sum.add(ct.getGiaTien());
-        }
+        tongTien = tinhTien();
     }
-
-    public int getMaPhieuThu() {
-        return this.maPhieuThu;
-    }
-
-    public void setMaPhieuThu(int maPhieuThu) {
-        this.maPhieuThu = maPhieuThu;
-    }
-
 
     public BigDecimal getTongTien() {
+        updateTongTien();
         return this.tongTien;
     }
 
+    public void xemDichVu(){
+        DanhSachDichVu ds = Program.getDSDV();
+        ds.xuatThongTin();
+    }
 
     @Override
     public void nhapThongTin() {
-        System.out.print("> Nhập mã KH: ");
-//        this.maKH = sc.nextInt();
-        sc.nextLine();
+        while (true){
+            System.out.println();
+            System.out.println(Text.center("YÊU CẦU DỊCH VỤ",40,'-'));
+            System.out.println("|"+Text.leftAt(10,Text.setLength("1. Tạo yêu cầu",27),' ')+"|");
+            System.out.println("|"+Text.leftAt(10,Text.setLength("2. Xem dịch vụ",27),' ')+"|");
+            System.out.println("|"+Text.leftAt(10,Text.setLength("3. Trở về",27),' ')+"|");
+            System.out.println(Text.center("",40,'-'));
+            System.out.print("> Nhập lựa chọn: ");
+            int value =0;
+            try{
+                value = sc.nextInt();
+                if (value <1 || value>3) throw new InvalidNumberException("Vui lòng chọn số từ 1-3");
+            } catch (InputMismatchException e){
+                System.out.println("<!> Lỗi: Vui lòng nhập số !");
+            } catch (InvalidNumberException e) {
+                System.out.println(e.toString());
+            }
+            finally {
+                sc.nextLine();
+            }
+            if (value == 1)
+                themDichVu();
+            if (value == 2)
+                xemDichVu();
+            if (value == 3) {
+                break;
+            }
+        }
+    }
+
+    public void kiemTraUuDaiCuaPhongVip(){
+        if (maPhong.getLoaiPhong()==1){
+            PhongVip v = (PhongVip) maPhong;
+            MyArray<ChiTietDichVu> uudaiphong = v.getUuDaiVip().getDsUuDai();
+            for (int i=0;i<dsdv.getLength();i++){
+                for (int j=0;j<uudaiphong.getLength();j++){
+                    if (dsdv.getAt(i).getMaDV().equalsIgnoreCase(uudaiphong.getAt(j).getMaDV())){
+                        BigDecimal a = uudaiphong.getAt(j).getSoLuong();
+                        BigDecimal b = dsdv.getAt(i).getSoLuong();
+                            if (a.compareTo(b)>=0){
+                                a = a.subtract(b);
+                                b = new BigDecimal("0");
+                            }
+                            else {
+                                b = b.subtract(a);
+                                a = new BigDecimal("0");
+                            }
+                    }
+                }
+                dsdv.getAt(i).updateGiaTien();
+            }
+        }
     }
     
     @Override
     public void xuatThongTin() {
-        System.out.println("\n-------------------------PHIẾU THU--------------------------");
-        System.out.println(" - Tên khách hàng: " + maPhieuThu+"\t Ngày lập phiếu thu: "+ngayTaoPhieu);
-        System.out.println(" - Mã phiếu thu: " + maPhieuThu+"\t Ngày lập phiếu thu: "+ngayTaoPhieu);
-        System.out.println("--------------DANH SÁCH CÁC DỊCH VỤ ĐÃ DÙNG--------------");
-        System.out.print(title());
-        dsdv.forEach(item -> {
-            System.out.println(item);
-        });
-        System.out.println(" => Tổng tiền: " + tongTien);
+        System.out.println();
+        System.out.println(Text.center("THÔNG TIN PHIẾU THU",60,'-'));
+        System.out.println(" - Ngày tạo: "+ngayTaoPhieu.toString());
+        System.out.print(PhieuThu.title());
+        for (int i=0;i<dsdv.getLength();i++){
+            System.out.println(dsdv.getAt(i));
+        }
+        System.out.println(" ======> Tổng tiền: " + tongTien+" <====== ");
+    }
+
+    @Override
+    public BigDecimal tinhTien() {
+        BigDecimal sum = new BigDecimal("0");
+        for (int i=0;i<dsdv.getLength();i++) {
+            sum = sum.add(dsdv.getAt(i).getGiaTien());
+        }
+        return sum;
     }
 
     public static String title(){
         String header = Text.center("",128,'-')+"\n";
-        String format = String.format("|%-15s|%-15s|%-25s|%-10s|%-15s|%-15s|%-20s|\n","Mã DV","Tên DV","Số Lượng","Đơn Giá","Giá Tiền","Ngày tạo");
+        String format = String.format("|%15s|%25s|%15s|%15s|%15s|%20s|\n","Mã DV","Tên DV","Số Lượng","Đơn Giá","Giá Tiền","Ngày tạo");
         String footer = Text.center("",128,'-')+"\n";
         String returnStr = header + format + footer;
         return returnStr;
     }
-
 
 
 }

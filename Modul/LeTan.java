@@ -46,7 +46,7 @@ public class LeTan extends NhanVien implements ConsoleIO{
 
     @Override
     public void lamViec() {
-        MenuHandle.leTanMenu();
+        MenuHandle.leTanMenu2();
     }
 
     public int getChucVu(){

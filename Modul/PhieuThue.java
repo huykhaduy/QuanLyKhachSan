@@ -6,21 +6,19 @@ import Controller.Program;
 import Modul.SupportModul.DateTime;
 
 public class PhieuThue extends Phieu implements ConsoleIO {
-    private static int id = 0;
-    private int maPhieuThue;
     private DateTime startDate = new DateTime();
     private DateTime endDate = new DateTime();
     private BigDecimal[] giaTien;
+    private BigDecimal totalMoney;
 
     public PhieuThue() {
         super();
-        maPhieuThue = ++id;
         giaTien = new BigDecimal[3];
+        totalMoney = new BigDecimal("0");
     }
 
     public PhieuThue(KhachHang maKH, Phong maPhong) {
         super();
-        maPhieuThue = ++id;
         this.maKH = maKH;
         this.maPhong = maPhong;
         this.giaTien = new BigDecimal[3];
@@ -34,6 +32,7 @@ public class PhieuThue extends Phieu implements ConsoleIO {
             giaTien[1] = Program.getBangGia().getGiaPhongThuongGio();
             giaTien[2] = Program.getBangGia().getGiaPhongThuongPhut();
         }
+        totalMoney = new BigDecimal("0");
     }
 
     public DateTime getStartDate() {
@@ -57,7 +56,7 @@ public class PhieuThue extends Phieu implements ConsoleIO {
         return this.giaTien;
     }
 
-    public void updateGiaTien(BigDecimal giaTien[]) {
+    public void updateGiaTien(BigDecimal[] giaTien) {
         //Tinh toan gia tien !
         this.giaTien = giaTien;
     }
@@ -66,14 +65,37 @@ public class PhieuThue extends Phieu implements ConsoleIO {
         //set trang thai phong ve trong
         endDate.nhapNgayGio("NHẬP NGÀY GIỜ TRẢ PHÒNG");
         while (endDate.compareDateTime(startDate) < 0) {
-            // endDate.setCurrentTime();
+//             endDate.setCurrentTime();
             System.out.println("Ngày trả phòng nhỏ hơn ngày đặt phòng! Vui lòng nhập lại");
             endDate.nhapNgayGio("NHẬP NGÀY GIỜ TRẢ PHÒNG");
         }
             
         int[] counter = endDate.getDayTimeFrom(startDate);
-        System.out.println(" -> Thue " + counter[0] + " ngay " + counter[1] + " gio " + counter[2]);
-        
+        System.out.println(" -> Thuê " + counter[0] + " ngày " + counter[1] + " giờ " + counter[2]+" phút");
+    }
+
+    public void traPhongNow(){
+        endDate.setCurrentTime();
+        maPhong.setTinhTrang(false);
+    }
+
+    public BigDecimal tinhTien(){
+        endDate.setCurrentTime();
+        int[] counter = endDate.getDayTimeFrom(startDate);
+        BigDecimal tongtien = new BigDecimal("0");
+        tongtien = tongtien.add(giaTien[0].multiply(new BigDecimal(counter[0])));
+        tongtien = tongtien.add(giaTien[1].multiply(new BigDecimal(counter[1])));
+        tongtien = tongtien.add(giaTien[2].multiply(new BigDecimal(counter[2])));
+        totalMoney = tongtien;
+        return tongtien;
+    }
+
+    public BigDecimal getTotalMoney() {
+        return totalMoney;
+    }
+
+    public void setTotalMoney(BigDecimal totalMoney) {
+        totalMoney = tinhTien();
     }
 
     @Override
@@ -91,24 +113,23 @@ public class PhieuThue extends Phieu implements ConsoleIO {
 
     @Override
     public void xuatThongTin(){
-        System.out.println("\n-------------------------PHIẾU THUÊ--------------------------");
-        System.out.println(" - Mã phiếu thuê: " + maPhieuThue+"\t Ngày lập phiếu thuê: "+ngayTaoPhieu);
-        System.out.println("Mã KH: "+ maKH+"\t Mã phòng: "+maPhong);
-        System.out.println("Ngày thuê: "+startDate);
-        System.out.println("Ngày trả: "+endDate);
-        System.out.println(" =>Tổng tiền: " + giaTien);
+        int[] counter = endDate.getDayTimeFrom(startDate);
+        System.out.println();
+        System.out.println(Text.center("THÔNG TIN PHIẾU THUÊ",60,'-'));
+        System.out.println(" - Ngày thuê "+startDate.toString());
+        System.out.println(" - Ngày trả "+endDate.toString());
+        System.out.println(" - Thời gian thuê: "+counter[0]+" ngày "+counter[1]+" giờ "+counter[2]+" phút");
+        System.out.println(" - Giá thuê: "+giaTien[0]+"/ngày, "+giaTien[1]+"/giờ, "+giaTien[2]+"/phút");
+        System.out.println(" - Tổng tiền thuê: "+tinhTien().toString());
+        System.out.println(" - Ngày tạo phiếu: "+ngayTaoPhieu.toString());
     }
 
 //    @Override
 //    public void xuatThongTin() {
-////        System.out.print("\033[44m");
 //        System.out.println("-----------------------------------------------------------------------------------------------------------");
 //        System.out.printf("|%-15s|%-15s|%-15s|%-20s|%-20s|%-15s|","MaKH","Ma Phieu Thue","Ma Phong","Ngay thue","Ngay ket thuc","Gia tien");
-////        System.out.print("\033[0m");
 //        System.out.println();
-////        System.out.print("\033[44m");
 //        System.out.println("-----------------------------------------------------------------------------------------------------------");
-////        System.out.print("\033[0m\n");
 //        System.out.printf("|%15s|%15s|%15s|%20s|%20s|%15s|\n",maKH,maPhieuThue,maPhong,startDate,endDate,giaTien);
 //    }
     

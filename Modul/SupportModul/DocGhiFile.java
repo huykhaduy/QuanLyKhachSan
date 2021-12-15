@@ -57,7 +57,7 @@ public class DocGhiFile<U extends Serializable> {
                     fileobj.close();
                 }
             } catch (IOException e) {
-                System.out.println("");
+//                System.out.println("");
             }
         }
         return list;

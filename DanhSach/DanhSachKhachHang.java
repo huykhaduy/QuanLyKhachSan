@@ -53,6 +53,7 @@ public class DanhSachKhachHang implements ChucNangDS,Modul.ConsoleIO {
         KhachHang kh = new KhachHang();
         kh.nhapThongTin();
         dskh.push(kh);
+        writeToFile();
     }
 
     @Override
@@ -77,6 +78,7 @@ public class DanhSachKhachHang implements ChucNangDS,Modul.ConsoleIO {
             dskh.removeAt(dskh.indexOf(kh));
             System.out.println("<!> Xóa thành công người dùng!");
         }
+        writeToFile();
     }
 
     @Override
@@ -91,6 +93,7 @@ public class DanhSachKhachHang implements ChucNangDS,Modul.ConsoleIO {
         }
         System.out.println(" Bạn đang sửa thông tin của: "+kh.getName());
         kh.suaThongTin();
+        writeToFile();
     }
 
     @Override
@@ -98,7 +101,7 @@ public class DanhSachKhachHang implements ChucNangDS,Modul.ConsoleIO {
         System.out.println();
         System.out.println(Text.center("SẮP XẾP DANH SÁCH KHÁCH HÀNG",40,'-'));
         System.out.println(" 1. Theo mã khách hàng (asc/desc)");
-        System.out.println(" 2. Theo Tên khách hàng (asc/desc)");
+        System.out.println(" 2. Theo tên khách hàng (asc/desc)");
         System.out.println(" 3. Theo CCCD/CMND (asc/desc)");
         System.out.println(" 4. Theo số điện thoại (asc/desc)");
         System.out.println(" 5. Theo ngày sinh (asc/desc)");
@@ -222,7 +225,6 @@ public class DanhSachKhachHang implements ChucNangDS,Modul.ConsoleIO {
 
     @Override
     public void nhapThongTin() {
-        readFromFile();
         while (true){
             System.out.println();
             System.out.println(Text.center("DANH SÁCH KHÁCH HÀNG",40,'-'));
@@ -261,6 +263,17 @@ public class DanhSachKhachHang implements ChucNangDS,Modul.ConsoleIO {
         for (int i=0;i< dskh.getLength();i++){
             System.out.println(dskh.getAt(i));
         }
+    }
+
+    public int getLargestId(){
+        if (dskh.getLength()==0) return 0;
+        int manv = 0;
+        for (int i=0;i<dskh.getLength();i++){
+            if (dskh.getAt(i).getMaKH()>manv){
+                manv=dskh.getAt(i).getMaKH();
+            }
+        }
+        return manv;
     }
 
     public MyArray<KhachHang> modulTimKiem(String str){

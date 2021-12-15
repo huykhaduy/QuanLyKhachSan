@@ -21,11 +21,14 @@ public class Program {
     public static void run(){
         Program.init();
         Program.readFiles();
-//        dstk.themTaiKhoan("1","1","NV0001");
-//        dstk.themTaiKhoan("2","2","NV0002");
-//        dstk.themTaiKhoan("3","3","NV0003");
+//        dsnv.nhapThongTin();
+//        dstk.themTaiKhoan("letan","letan","NV0001");
+//        dstk.themTaiKhoan("quanly","quanly","NV0002");
+//        dstk.themTaiKhoan("admin","admin","NV0003");
 //        dstk.writeToFile();
-        Program.getBangGia();
+//        dsnv.xuatThongTin();
+//        dstk.xuatThongTin();
+
         while (true){
             MenuHandle.loginMenu();
             MenuHandle.showWorkMenu();
@@ -52,6 +55,23 @@ public class Program {
         dskh.readFromFile();
         dsphong.readFromFile();
         dstk.readFromFile();
+        dsdv.readFromFile();
+        bangGia.readFromFile();
+        dsudVip.readFromFile();
+        dstnThuong.readFromFile("./Data/TienNghiThuong.txt");
+        dstnVip.readFromFile("./Data/TienNghiVip.txt");
+    }
+
+    public static void saveAll(){
+        Program.getDSNV().writeToFile();
+        Program.getDSKH().writeToFile();
+        Program.getDSP().writeToFile();
+        Program.getDSTK().writeToFile();
+        Program.getDSDV().writeToFile();
+        Program.getBangGia().writeToFile();
+        Program.getDsudVip().writeToFile();
+        Program.getDstnThuong().writeToFile("./Data/TienNghiThuong.txt");
+        Program.getDstnVip().writeToFile("./Data/TienNghiVip.txt");
     }
 
     public static DanhSachKhachHang getDSKH(){

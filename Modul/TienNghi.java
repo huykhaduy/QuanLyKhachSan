@@ -1,6 +1,8 @@
 package Modul;
 
+import Controller.Program;
 import Modul.Error.InvalidStringException;
+import Modul.Error.NotExsitException;
 import Modul.SupportModul.Check;
 import Modul.SupportModul.DateTime;
 
@@ -27,9 +29,24 @@ public class TienNghi implements ConsoleIO, MyCompare<TienNghi>, Serializable {
 
     public void setMaTienNghi(String maTienNghi) throws InvalidStringException {
         if (maTienNghi.length()<3)
-            throw new InvalidStringException("Mã tiện ích phải có ít nhất 3 kí tự");
+            throw new InvalidStringException("Mã tiện nghi phải có ít nhất 3 kí tự");
         if (Check.containsSpace(maTienNghi))
-            throw new InvalidStringException("Mã tiện ích không chứa khoản trống!");
+            throw new InvalidStringException("Mã tiện nghi không chứa khoản trống!");
+        int count=0;
+        try {
+            TienNghi p = Program.getDstnThuong().layDuLieuTn(maTienNghi);
+        } catch (NotExsitException e) {
+            count++;
+        }
+        try {
+            TienNghi p;
+            p = Program.getDstnVip().layDuLieuTn(maTienNghi);
+        } catch (NotExsitException e) {
+            count++;
+        }
+        if (count<2){
+            throw new InvalidStringException("Mã tiện nghi đã tồn tại!");
+        }
         this.maTienNghi = maTienNghi;
     }
 
@@ -39,22 +56,22 @@ public class TienNghi implements ConsoleIO, MyCompare<TienNghi>, Serializable {
 
     public void setTenTienNghi(String tenTienNghi) throws InvalidStringException {
         if (tenTienNghi.length()<4)
-            throw new InvalidStringException("Tên tiện ích phải có ít nhất 4 kí tự");
+            throw new InvalidStringException("Tên tiện nghi phải có ít nhất 4 kí tự");
         this.tenTienNghi = tenTienNghi;
     }
 
     @Override
     public void nhapThongTin() {
-        System.out.println(Text.center("NHẬP THÔNG TIN TIỆN ÍCH",40,'-'));
+        System.out.println(Text.center("NHẬP THÔNG TIN TIỆN NGHI",40,'-'));
         int step = 1;
         do{
             try{
                 if (step == 1){
-                    System.out.print("> Nhập mã tiện ích: ");
+                    System.out.print("> Nhập mã tiện nghi: ");
                     setMaTienNghi(sc.nextLine());
                 }
                 if (step == 2){
-                    System.out.print("> Nhập tên tiện ích: ");
+                    System.out.print("> Nhập tên tiện nghi: ");
                     setTenTienNghi(sc.nextLine());
                 }
                 step++;
@@ -67,16 +84,16 @@ public class TienNghi implements ConsoleIO, MyCompare<TienNghi>, Serializable {
     @Override
     public void xuatThongTin() {
         System.out.println();
-        System.out.println(Text.center("THÔNG TIN TIỆN ÍCH",40,'-'));
-        System.out.println(" - Mã tiện ích: "+maTienNghi);
-        System.out.println(" - Tên tiện ích: "+tenTienNghi);
+        System.out.println(Text.center("THÔNG TIN TIỆN NGHI",40,'-'));
+        System.out.println(" - Mã tiện nghi: "+maTienNghi);
+        System.out.println(" - Tên tiện nghi: "+tenTienNghi);
         System.out.println(" - Ngày tạo: "+ngayTao.toString());
     }
 
     public void suaThongTin(){
         while (true){
             try {
-                System.out.print("> Nhập tên tiện ích: ");
+                System.out.print("> Nhập tên tiện nghi: ");
                 setTenTienNghi(sc.nextLine());
                 break;
             } catch (InvalidStringException e) {
@@ -87,7 +104,7 @@ public class TienNghi implements ConsoleIO, MyCompare<TienNghi>, Serializable {
 
     @Override
     public String toString(){
-        String format = String.format("|%10s|%30s|%20s|",maTienNghi,tenTienNghi,ngayTao.toString());
+        String format = String.format("|%15s|%30s|%20s|",maTienNghi,tenTienNghi,ngayTao.toString());
         return format;
     }
 

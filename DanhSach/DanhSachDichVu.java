@@ -4,6 +4,7 @@ import Modul.ConsoleIO;
 import Modul.DichVu;
 import Modul.Error.*;
 import Modul.Error.InvalidNumberException;
+import Modul.SupportModul.DocGhiFile;
 import Modul.Text;
 
 import java.util.InputMismatchException;
@@ -30,6 +31,7 @@ public class DanhSachDichVu implements ConsoleIO,ChucNangDS {
         DichVu newDv = new DichVu();
         newDv.nhapThongTin();
         dsdv.push(newDv);
+        writeToFile();
     }
 
     @Override
@@ -53,6 +55,7 @@ public class DanhSachDichVu implements ConsoleIO,ChucNangDS {
             dsdv.removeAt(dsdv.indexOf(dv));
             System.out.println("<!> Xóa thành công dịch vụ!");
         }
+        writeToFile();
     }
 
     @Override
@@ -67,6 +70,7 @@ public class DanhSachDichVu implements ConsoleIO,ChucNangDS {
         }
         System.out.println(" Bạn đang sửa thông tin dịch vụ: "+dv.getTenDV());
         dv.suaThongTin();
+        writeToFile();
     }
 
     @Override
@@ -94,7 +98,10 @@ public class DanhSachDichVu implements ConsoleIO,ChucNangDS {
                 break;
             case 4: xoa();
                 break;
-            case 5: xuatThongTin();
+            case 5: sapXep();
+                break;
+            case 6: xuatThongTin();
+                break;
         }
     }
 
@@ -110,12 +117,16 @@ public class DanhSachDichVu implements ConsoleIO,ChucNangDS {
 
     @Override
     public void writeToFile() {
-
+        String name = "./Data/DichVu.txt";
+        DocGhiFile<DichVu> ghi = new DocGhiFile<DichVu>(dsdv);
+        ghi.ghiFileVaoThuMuc(name);
     }
 
     @Override
     public void readFromFile() {
-
+        String name = "./Data/DichVu.txt";
+        DocGhiFile<DichVu> ghi = new DocGhiFile<DichVu>();
+        dsdv = ghi.docFileTuThuMuc(name);
     }
 
     @Override
@@ -127,14 +138,15 @@ public class DanhSachDichVu implements ConsoleIO,ChucNangDS {
             System.out.println("|"+Text.leftAt(10,Text.setLength("2. Sửa dịch vụ",27),' ')+"|");
             System.out.println("|"+Text.leftAt(10,Text.setLength("3. Tìm dịch vụ",27),' ')+"|");
             System.out.println("|"+Text.leftAt(10,Text.setLength("4. Xóa dịch vụ",27),' ')+"|");
-            System.out.println("|"+Text.leftAt(10,Text.setLength("5. Xem danh sách",27),' ')+"|");
-            System.out.println("|"+Text.leftAt(10,Text.setLength("6. Thoát",27),' ')+"|");
+            System.out.println("|"+Text.leftAt(10,Text.setLength("5. Sắp xếp danh sách",27),' ')+"|");
+            System.out.println("|"+Text.leftAt(10,Text.setLength("6. Xem danh sách",27),' ')+"|");
+            System.out.println("|"+Text.leftAt(10,Text.setLength("7. Lưu và thoát",27),' ')+"|");
             System.out.println(Text.center("",40,'-'));
             System.out.print("> Nhập lựa chọn: ");
             int value =0;
             try{
                 value = sc.nextInt();
-                if (value <1 || value>6) throw new InvalidNumberException("Vui lòng chọn số từ 1-6");
+                if (value <1 || value>7) throw new InvalidNumberException("Vui lòng chọn số từ 1-7");
             } catch (InputMismatchException e){
                 System.out.println("<!> Lỗi: Vui lòng nhập số !");
             } catch (InvalidNumberException e) {
@@ -142,7 +154,10 @@ public class DanhSachDichVu implements ConsoleIO,ChucNangDS {
             } finally {
                 sc.nextLine();
             }
-            if (value == 6) break;
+            if (value == 7) {
+                writeToFile();
+                break;
+            }
             xuLy(value);
         }
     }

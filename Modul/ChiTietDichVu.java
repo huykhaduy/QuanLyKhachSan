@@ -1,5 +1,6 @@
 package Modul;
 
+import Controller.Program;
 import DanhSach.DanhSachDichVu;
 import Modul.Error.InvalidNumberException;
 import Modul.Error.InvalidStringException;
@@ -7,14 +8,27 @@ import Modul.Error.NotExsitException;
 import Modul.SupportModul.Check;
 import Modul.SupportModul.DateTime;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class ChiTietDichVu implements ConsoleIO, MyCompare<ChiTietDichVu> {
+public class ChiTietDichVu implements ConsoleIO, MyCompare<ChiTietDichVu>, Serializable {
     private DichVu dv = new DichVu();
     private BigDecimal soLuong = new BigDecimal("0");
     private BigDecimal giaTien = new BigDecimal("0");
+    private DateTime ngayTao = new DateTime();
 
     public ChiTietDichVu() {
+        ngayTao.setCurrentTime();
+    }
+
+    public ChiTietDichVu(String maDV) {
+        DanhSachDichVu ds = Program.getDSDV();
+        try {
+            dv = ds.layDuLieuDV(maDV);
+        } catch (NotExsitException e) {
+            System.out.println("mã dịch vụ "+maDV);
+        }
+        ngayTao.setCurrentTime();
     }
 
     public String getMaDV(){
@@ -41,11 +55,9 @@ public class ChiTietDichVu implements ConsoleIO, MyCompare<ChiTietDichVu> {
         return ds.layDuLieuDV(maDV);
     }
 
-    public void setMaDV(DanhSachDichVu ds, String maDV) throws NotExsitException {
-        dv = getDanhSachDV(ds,maDV);
-    }
-
-    private void setMaDV(String nextLine) {
+    private void setMaDV(String maDV) throws NotExsitException {
+        DanhSachDichVu ds = Program.getDSDV();
+        dv = ds.layDuLieuDV(maDV);
     }
 
     public BigDecimal getSoLuong() {
@@ -60,34 +72,13 @@ public class ChiTietDichVu implements ConsoleIO, MyCompare<ChiTietDichVu> {
     }
 
     public BigDecimal getGiaTien() {
+        updateGiaTien();
         return this.giaTien;
     }
 
     public void updateGiaTien() {
         // getDonGia
         giaTien = soLuong.multiply(dv.donGia);
-    }
-
-    public void nhapThongTin(DanhSachDichVu ds) {
-        int step =1;
-        do{
-            try {
-                if (step == 1){
-                    System.out.print("> Nhập mã dịch vụ: ");
-                    setMaDV(ds,sc.nextLine());
-                }
-                if (step == 2){
-                    System.out.print("> Nhập số lượng: ");
-                    setSoLuong(sc.nextLine());
-                }
-                step++;
-            } catch (NotExsitException e){
-                System.out.println(e.toString());
-            } catch (InvalidNumberException e) {
-                System.out.println(e.toString());
-            }
-        } while (step <3);
-        updateGiaTien();
     }
 
     @Override
@@ -104,7 +95,7 @@ public class ChiTietDichVu implements ConsoleIO, MyCompare<ChiTietDichVu> {
                     setSoLuong(sc.nextLine());
                 }
                 step++;
-            } catch (InvalidNumberException e) {
+            } catch (InvalidNumberException | NotExsitException e) {
                 System.out.println(e.toString());
             }
         } while (step <3);
@@ -118,7 +109,7 @@ public class ChiTietDichVu implements ConsoleIO, MyCompare<ChiTietDichVu> {
         System.out.println(" - Số lượng: " + soLuong);
         System.out.println(" - Đơn giá: " + dv.donGia);
         System.out.println(" - Giá tiền: " + giaTien);
-        System.out.println(" - Ngày giờ: " + dv.ngayTao);
+        System.out.println(" - Ngày giờ: " + ngayTao.toString());
     }
 
     public void suaThongTin(){
@@ -132,7 +123,7 @@ public class ChiTietDichVu implements ConsoleIO, MyCompare<ChiTietDichVu> {
 
     @Override
     public String toString() {
-        String format = String.format("|%15s|%25s|%10s|%15s|%15s|%20s|\n", dv.maDV, dv.tenDV, soLuong, dv.donGia, giaTien, dv.ngayTao);
+        String format = String.format("|%15s|%25s|%15s|%15s|%15s|%20s|", dv.maDV, dv.tenDV, soLuong, dv.donGia, giaTien, ngayTao.toString());
         return format;
     }
 

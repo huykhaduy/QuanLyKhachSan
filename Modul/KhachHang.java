@@ -1,5 +1,6 @@
 package Modul;
 
+import Controller.Program;
 import Modul.Error.InvalidNumberException;
 import Modul.SupportModul.DateTime;
 import Modul.SupportModul.DiaChi;
@@ -7,7 +8,7 @@ import Modul.SupportModul.DiaChi;
 import java.io.Serializable;
 
 public class KhachHang extends ConNguoi implements ConsoleIO, MyCompare<KhachHang>, Serializable{
-    private static int id=0;
+    private static int id= Program.getDSKH().getLargestId();
     private int maKH;
     private String maKHStr;
     private DateTime ngayThamGia = new DateTime();

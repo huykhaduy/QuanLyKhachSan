@@ -81,6 +81,7 @@ public class DanhSachNhanVien implements ChucNangDS,Modul.ConsoleIO{
             if (choice == 4){
                 break;
             }
+            writeToFile();
         }
     }
 
@@ -99,12 +100,13 @@ public class DanhSachNhanVien implements ChucNangDS,Modul.ConsoleIO{
         try{
             isDel = sc.nextLine().charAt(0);
         } catch (InputMismatchException e){
-            System.out.println("<!> Lựa chọn nvông hợp lệ!");
+            System.out.println("<!> Lựa chọn không hợp lệ!");
         }
         if (isDel == 'y'|| isDel =='Y'){
             dsnv.removeAt(dsnv.indexOf(nv));
             System.out.println("<!> Xóa thành công nhân viên!");
         }
+        writeToFile();
     }
 
     @Override
@@ -139,6 +141,7 @@ public class DanhSachNhanVien implements ChucNangDS,Modul.ConsoleIO{
 
         if (choice == 1) nv.suaThongTin();
         if (choice == 2) nv.suaThuocTinhCuaChucVu();
+        writeToFile();
     }
 
     @Override
@@ -219,24 +222,6 @@ public class DanhSachNhanVien implements ChucNangDS,Modul.ConsoleIO{
         String name = "./Data/NhanVien.txt";
         DocGhiFile<NhanVien> write = new DocGhiFile<>(dsnv);
         write.ghiFileVaoThuMuc(name);
-//        try {
-//            FileOutputStream filein = new FileOutputStream(name);
-//            ObjectOutputStream fileobj = new ObjectOutputStream(filein);
-//            for (int i = 0; i < dsnv.getLength(); i++) {
-//                NhanVien nv = dsnv.getAt(i);
-//                fileobj.writeObject(nv);
-//            }
-//            fileobj.close();
-//        } catch (IOException e) {
-//            System.out.println("<!> Lỗi ghi vào file " + name);
-//            e.printStackTrace();
-//            if (e instanceof NotSerializableException) {
-//                e.printStackTrace();
-//            }
-//            if (e instanceof InvalidClassException) {
-//                System.out.println("<!> Invalid class " + name);
-//            }
-//        }
     }
 
     @Override
@@ -247,31 +232,10 @@ public class DanhSachNhanVien implements ChucNangDS,Modul.ConsoleIO{
         if (test != null && test.getLength()>0){
             dsnv = test;
         }
-//        NhanVien kh;
-//        FileInputStream fis;
-//        ObjectInputStream fileobj = null;
-//        try{
-//            fis = new FileInputStream(name);
-//            fileobj = new ObjectInputStream(fis);
-//            while (true){
-//                kh = (NhanVien) fileobj.readObject();
-//                dsnv.push(kh);
-//            }
-//        } catch (IOException | ClassNotFoundException ignored) {
-//        } finally {
-//            try {
-//                if (fileobj != null) {
-//                    fileobj.close();
-//                }
-//            } catch (IOException e) {
-//                System.out.println("");
-//            }
-//        }
     }
 
     @Override
     public void nhapThongTin() {
-        readFromFile();
         while (true){
             System.out.println();
             System.out.println(Text.center("DANH SÁCH NHÂN VIÊN",40,'-'));
@@ -338,6 +302,17 @@ public class DanhSachNhanVien implements ChucNangDS,Modul.ConsoleIO{
         }
         if (result.getLength() == 0 ) return null;
         return result;
+    }
+
+    public int getLargestId(){
+        if (dsnv.getLength()==0) return 0;
+        int manv = 0;
+        for (int i=0;i<dsnv.getLength();i++){
+            if (dsnv.getAt(i).getMaNV()>manv){
+                manv=dsnv.getAt(i).getMaNV();
+            }
+        }
+        return manv;
     }
 
     public static String title(){

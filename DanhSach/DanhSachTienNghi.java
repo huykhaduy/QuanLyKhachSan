@@ -7,9 +7,10 @@ import Modul.SupportModul.DocGhiFile;
 import Modul.SupportModul.MySort;
 import Modul.TienNghi;
 
+import java.io.Serializable;
 import java.util.InputMismatchException;
 
-public class DanhSachTienNghi implements ChucNangDS, ConsoleIO {
+public class DanhSachTienNghi implements ChucNangDS, ConsoleIO, Serializable {
     private MyArray<TienNghi> dstienNghi = new MyArray<TienNghi>();
 
     public DanhSachTienNghi() {
@@ -29,7 +30,7 @@ public class DanhSachTienNghi implements ChucNangDS, ConsoleIO {
         MyArray<TienNghi> tienNghi = modulTimKiem(sc.nextLine().toLowerCase());
         if (tienNghi != null){
             if (tienNghi.getLength()>1){
-                System.out.println(DanhSachUuDai.title());
+                System.out.println(DanhSachTienNghi.title());
                 for (int i=0;i<tienNghi.getLength();i++){
                     System.out.println(tienNghi.getAt(i).toString());
                 }
@@ -158,6 +159,11 @@ public class DanhSachTienNghi implements ChucNangDS, ConsoleIO {
         DocGhiFile<TienNghi> ghi = new DocGhiFile<TienNghi>(dstienNghi);
         ghi.ghiFileVaoThuMuc(name);
     }
+    //Overloading
+    public void writeToFile(String name) {
+        DocGhiFile<TienNghi> ghi = new DocGhiFile<TienNghi>(dstienNghi);
+        ghi.ghiFileVaoThuMuc(name);
+    }
 
     @Override
     public void readFromFile() {
@@ -167,10 +173,17 @@ public class DanhSachTienNghi implements ChucNangDS, ConsoleIO {
         if (test != null && test.getLength()>0)
             dstienNghi = test;
     }
+    //Overloading
+    public void readFromFile(String name) {
+        DocGhiFile<TienNghi> doc = new DocGhiFile<>();
+        MyArray<TienNghi> test = doc.docFileTuThuMuc(name);
+        if (test != null && test.getLength()>0)
+            dstienNghi = test;
+    }
+
 
     @Override
     public void nhapThongTin() {
-        readFromFile();
         while (true){
             System.out.println();
             System.out.println(Text.center("DANH SÁCH TIỆN NGHI",40,'-'));
@@ -205,10 +218,18 @@ public class DanhSachTienNghi implements ChucNangDS, ConsoleIO {
 
     @Override
     public void xuatThongTin() {
-        System.out.println(DanhSachTienNghi.title());
-        for (int i=0;i<dstienNghi.getLength();i++){
-            System.out.println(dstienNghi.getAt(i).toString());
+        if (dstienNghi.getLength()>0){
+            System.out.println(Text.center("THÔNG TIN TIỆN NGHI",69,' '));
+            System.out.println(DanhSachTienNghi.title());
+            for (int i=0;i<dstienNghi.getLength();i++){
+                System.out.println(dstienNghi.getAt(i).toString());
+            }
+            System.out.println();
         }
+        else {
+            System.out.println("<!> Danh sách tiện nghi trống");
+        }
+
     }
 
     public MyArray<TienNghi> modulTimKiem(String str){
@@ -225,9 +246,9 @@ public class DanhSachTienNghi implements ChucNangDS, ConsoleIO {
     }
 
     public static String title(){
-        String header = Text.center("",64,'-');
-        String format = String.format("|%10s|%30s|%20s|","Mã Tiện Nghi","Tên Tiện Nghi","Ngày tạo");
-        String footer = Text.center("",64,'-');
+        String header = Text.center("",69,'-');
+        String format = String.format("|%15s|%30s|%20s|","Mã Tiện Nghi","Tên Tiện Nghi","Ngày tạo");
+        String footer = Text.center("",69,'-');
         return header+"\n"+format+"\n"+footer;
     }
 }

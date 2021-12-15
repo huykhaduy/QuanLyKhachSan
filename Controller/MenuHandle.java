@@ -39,11 +39,13 @@ public class MenuHandle {
             System.out.format("%-30s%-5s%-30s%-30s%s\n","","|PHÍM","|","CHỨC NĂNG","|");
             System.out.format("%-30s%-5s%-30s%-30s%s\n","","| 1","| Đặt phòng","","|");
             System.out.format("%-30s%-5s%-30s%-30s%s\n","","| 2","| Tìm phòng","","|");
-            System.out.format("%-30s%-5s%-30s%-30s%s\n","","| 3","| Yêu cầu dịch vụ","","|");
-            System.out.format("%-30s%-5s%-30s%-30s%s\n","","| 4","| Thanh toán hóa đơn","","|");
-            System.out.format("%-30s%-5s%-30s%-30s%s\n","","| 5","| Thêm khách hàng","","|");
-            System.out.format("%-30s%-5s%-30s%-30s%s\n","","| 6","| Sửa khách hàng","","|");
-            System.out.format("%-30s%-5s%-30s%-30s%s\n","","| 6","| Tìm khách hàng","","|");
+            System.out.format("%-30s%-5s%-30s%-30s%s\n","","| 3","| Xem giá phòng","","|");
+            System.out.format("%-30s%-5s%-30s%-30s%s\n","","| 4","| Xem ưu đãi","","|");
+            System.out.format("%-30s%-5s%-30s%-30s%s\n","","| 5","| Yêu cầu dịch vụ","","|");
+            System.out.format("%-30s%-5s%-30s%-30s%s\n","","| 6","| Thanh toán hóa đơn","","|");
+            System.out.format("%-30s%-5s%-30s%-30s%s\n","","| 7","| Thêm khách hàng","","|");
+            System.out.format("%-30s%-5s%-30s%-30s%s\n","","| 8","| Sửa khách hàng","","|");
+            System.out.format("%-30s%-5s%-30s%-30s%s\n","","| 9","| Tìm khách hàng","","|");
             System.out.format("%-30s%-5s%-30s%-30s%s\n","","| 0","| Đăng xuất","","|");
             System.out.format("%-30s%-80s\n","","------------------------------------------------------------------");
             System.out.format("%-30s%s","","Nhập lựa chọn của bạn: ");
@@ -53,7 +55,41 @@ public class MenuHandle {
                     return;
                 case "1": LeTanHandle.datPhong();
                     break;
-                case "2": LeTanHandle.hienThiPhongTrong();
+                case "2": LeTanHandle.hienThiPhong();
+                    break;
+                case "3": LeTanHandle.xemGiaPhong();
+                    break;
+                default:
+                    System.out.format("%-30s%s","","<!> Lựa chọn không hợp lệ!");
+                    break;
+            }
+        }
+    }
+
+    public static void leTanMenu2(){
+        while (true){
+            System.out.println();
+            System.out.format("%-30s%-80s\n","","----------------------------MENU LỄ TÂN---------------------------");
+            System.out.format("%-30s%-5s%-30s%-30s%s\n","","|PHÍM","|","CHỨC NĂNG","|");
+            System.out.format("%-30s%-5s%-30s%-30s%s\n","","| 1","| Thao tác đặt phòng","","|");
+            System.out.format("%-30s%-5s%-30s%-30s%s\n","","| 2","| Yêu cầu dịch vụ","","|");
+            System.out.format("%-30s%-5s%-30s%-30s%s\n","","| 3","| Thanh toán hóa đơn","","|");
+            System.out.format("%-30s%-5s%-30s%-30s%s\n","","| 4","| Thao tác khách hàng","","|");
+            System.out.format("%-30s%-5s%-30s%-30s%s\n","","| 0","| Đăng xuất","","|");
+            System.out.format("%-30s%-80s\n","","------------------------------------------------------------------");
+            System.out.format("%-30s%s","","Nhập lựa chọn của bạn: ");
+            String choice = sc.nextLine();
+            switch (choice){
+                case "0": LoginHandle.logOut();
+                    return;
+                case "1": LeTanHandle2.thaoTacDatPhong();
+                    break;
+                case "2": LeTanHandle2.yeuCauDichVu();
+                    break;
+                case "3": LeTanHandle2.thanhToanHoaDon();
+                    break;
+                case "4":
+                    LeTanHandle2.thaoTacKhachHang();
                     break;
                 default:
                     System.out.format("%-30s%s","","<!> Lựa chọn không hợp lệ!");
@@ -69,13 +105,11 @@ public class MenuHandle {
             System.out.format("%-30s%-5s%-30s%-30s%s\n","","|PHÍM","|","CHỨC NĂNG","|");
             System.out.format("%-30s%-5s%-30s%-30s%s\n","","| 1","| Quản lý phòng","","|");
             System.out.format("%-30s%-5s%-30s%-30s%s\n","","| 2","| Quản lý giá thuê phòng","","|");
-            //Quản lý phòng gồm: quản lý thêm xóa sửa, giá phòng, tiện ích của phòng
-            System.out.format("%-30s%-5s%-30s%-30s%s\n","","| 3","| Quản lý dịch vụ","","|");
-            //Quản lý dịch vụ gồm: quản lý thêm xóa sửa, dịch vụ
-            System.out.format("%-30s%-5s%-30s%-30s%s\n","","| 4","| Quản lý ưu đãi","","|");
-            //Quản lý dịch vụ gồm: quản lý thêm xóa sửa, ưu đãi
-            System.out.format("%-30s%-5s%-30s%-30s%s\n","","| 5","| Thống kê doanh thu","","|");
-            //System.out.format("%-30s%-5s%-30s%-30s%s\n","","| 5","| Xem hóa đơn","","|");
+            System.out.format("%-30s%-5s%-30s%-30s%s\n","","| 3","| Quản lý tiện nghi","","|");
+            System.out.format("%-30s%-5s%-30s%-30s%s\n","","| 4","| Quản lý dịch vụ","","|");
+            System.out.format("%-30s%-5s%-30s%-30s%s\n","","| 5","| Quản lý ưu đãi","","|");
+            System.out.format("%-30s%-5s%-30s%-30s%s\n","","| 6","| Quản lý hóa đơn","","|");
+            System.out.format("%-30s%-5s%-30s%-30s%s\n","","| 7","| Thống kê doanh thu","","|");
             System.out.format("%-30s%-5s%-30s%-30s%s\n","","| 0","| Đăng xuất","","|");
             System.out.format("%-30s%-80s\n","","------------------------------------------------------------------");
             System.out.format("%-30s%s","","Nhập lựa chọn của bạn: ");
@@ -83,11 +117,23 @@ public class MenuHandle {
             switch (choice){
                 case "0": LoginHandle.logOut();
                     return;
-
                 case "1":
                     QuanLyHandle.quanLyPhong();
                     break;
-
+                case "2":
+                    QuanLyHandle.quanLyGiaThue();
+                    break;
+                case "3":
+                    QuanLyHandle.quanLyTienNghi();
+                    break;
+                case "4":
+                    QuanLyHandle.quanLyDichVu();
+                    break;
+                case "5":
+                    QuanLyHandle.quanLyUuDai();
+                    break;
+                case "6":
+                    break;
                 default:
                     System.out.format("%-30s%s","","<!> Lựa chọn không hợp lệ!");
                     break;
@@ -111,9 +157,12 @@ public class MenuHandle {
             switch (choice){
                 case "0": LoginHandle.logOut();
                     return;
-//                case "1": FunctionHandle.datPhong();
-//                    break;
-
+                case "1": AdminHandle.quanLyTaiKhoan();
+                    break;
+                case "2": AdminHandle.quanLyThongTinNhanVien();
+                    break;
+                case "3": AdminHandle.quanLyThongTinKhachHang();
+                    break;
                 default:
                     System.out.format("%-30s%s","","<!> Lựa chọn không hợp lệ!");
                     break;

@@ -1,16 +1,18 @@
 package Modul;
 
 import Controller.Program;
+import DanhSach.DanhSachPhong;
 import DanhSach.DanhSachTienNghi;
 import Modul.Error.InvalidNumberException;
 import Modul.Error.InvalidStringException;
+import Modul.Error.NotExsitException;
 import Modul.SupportModul.Check;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.InputMismatchException;
 
-public class Phong implements ConsoleIO, Serializable {
+public class Phong implements ConsoleIO, Serializable, MyCompare<Phong> {
     protected String maPhong;
     protected int maLau;
     protected int soGiuong;
@@ -67,7 +69,13 @@ public class Phong implements ConsoleIO, Serializable {
         if (maPhong.length()<3){
             throw new InvalidStringException("Mã phòng phải có từ 3 kí tự trở lên");
         }
-        this.maPhong = maPhong;
+        try {
+            Phong p = Program.getDSP().layDuLieuPhong(maPhong);
+        } catch (NotExsitException e) {
+            this.maPhong = maPhong;
+            return;
+        }
+        throw new InvalidStringException("Mã phòng đã tồn tại!");
     }
 
     public void setMaLau(int maLau) throws InvalidNumberException {
@@ -99,15 +107,6 @@ public class Phong implements ConsoleIO, Serializable {
 
     @Override
     public void nhapThongTin(){
-//        System.out.println("-----Nhập thông tin phòng -----");
-//        System.out.print("- Mã phòng: "); maPhong=sc.nextLine();
-//        System.out.print("- Mã lầu: ");maLau=sc.nextInt();
-//        System.out.print("- Số giường: "); soGiuong=sc.nextInt();
-//        System.out.print("- Số người tối đa: "); soNguoiToiDa=sc.nextInt();
-//        System.out.print("- Tình trạng [trống/full]: "); String tt=sc.nextLine();tt=sc.nextLine();
-//        tinhTrang = !("trong".equals(tt)||"Trong".equals(tt)||"Trống".equals(tt)||"trống".equals(tt));
-//        System.out.print("- Giá tiền: "); giaTien=sc.nextBigDecimal();
-//        System.out.println("--------------------------------");
         System.out.println(Text.center("NHẬP THÔNG TIN PHÒNG",40,'-'));
         int step = 1;
         do{
@@ -131,7 +130,7 @@ public class Phong implements ConsoleIO, Serializable {
                 step++;
             }
             catch (InputMismatchException e){
-                System.out.println("Vui lòng nhập số nguyên dương!");
+                System.out.println("<!> Vui lòng nhập số nguyên dương!");
                 sc.nextLine();
             }
             catch (InvalidNumberException e){
@@ -146,8 +145,14 @@ public class Phong implements ConsoleIO, Serializable {
     }
     @Override
     public void xuatThongTin(){
-//        System.out.printf("|%-10s|%-10s|%-10s|%-15s|%-10s|%-10s|%-20s|\n",maPhong,maLau,soGiuong,soNguoiToiDa, tinhTrang ?"Đầy":"Trống",
-//                loaiPhong==1?"VIP":"Thường",loaiPhong == 1?BangGia.getGiaPhongThuongGio():BangGia.getGiaPhongVipGio());
+        System.out.println(Text.center("THÔNG TIN PHÒNG",40,'-'));
+        System.out.println(" - Mã phòng: "+maPhong);
+        System.out.println(" - Loại phòng: "+getTypeStr());
+        System.out.println(" - Tầng lầu: "+maLau);
+        System.out.println(" - Số giường: "+soGiuong);
+        System.out.println(" - Số người tối đa: "+soNguoiToiDa);
+        System.out.println(" - Tình trạng: "+ getTinhTrangStr());
+        dstn.xuatThongTin();
     }
 
     public void suaThongTin(){
@@ -167,6 +172,13 @@ public class Phong implements ConsoleIO, Serializable {
                     System.out.print("> Nhập số người tối đa: ");
                     setSoNguoiToiDa(sc.nextInt());
                 }
+                if (step == 4){
+                    System.out.print("> Cập nhật danh sách tiện nghi (y/n)? ");
+                    sc.nextLine();
+                    if (sc.nextLine().equalsIgnoreCase("y")){
+                        setDstn();
+                    }
+                }
                 step++;
             }
             catch (InputMismatchException e){
@@ -177,7 +189,7 @@ public class Phong implements ConsoleIO, Serializable {
                 System.out.println(e.toString());
                 sc.nextLine();
             }
-        } while (step<4);
+        } while (step<5);
     }
 
     public void thayDoiTinhTrang(){
@@ -201,7 +213,7 @@ public class Phong implements ConsoleIO, Serializable {
 
     public String toString(){
         String type = getTypeStr();
-        String s = String.format("|%15s|%15s|%15s|%15s|%15s|%15s|\n",maPhong,type,maLau,soGiuong,soNguoiToiDa,tinhTrang?"Đầy":"Trống");
+        String s = String.format("|%15s|%15s|%15s|%15s|%15s|%15s|\n",maPhong,type,maLau,soGiuong,soNguoiToiDa,getTinhTrangStr());
         return s;
     }
 
@@ -213,4 +225,42 @@ public class Phong implements ConsoleIO, Serializable {
         return type;
     }
 
+    public String getTinhTrangStr(){
+        return tinhTrang ?"Đầy":"Trống";
+    }
+
+    @Override
+    public int compareTo(Phong o2, int type) {
+        if (type == 1){
+            if (maPhong.compareToIgnoreCase(o2.maPhong)>1)
+                return 1;
+            return -1;
+        }
+        if (type == 2){
+            if (maLau>o2.maLau)
+                return 1;
+             return -1;
+        }
+        if (type == 3){
+            if (soGiuong>o2.soGiuong)
+                return 1;
+            return -1;
+        }
+        if (type == 4){
+            if (soNguoiToiDa>o2.soNguoiToiDa)
+                return 1;
+            return -1;
+        }
+        if (type == 5){
+            if (loaiPhong>o2.loaiPhong)
+                return 1;
+            return -1;
+        }
+        if (type == 6){
+            if (getTinhTrangStr().compareToIgnoreCase(o2.getTinhTrangStr())>0)
+                return 1;
+            return -1;
+        }
+        return 0;
+    }
 }

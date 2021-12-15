@@ -3,11 +3,13 @@ package DanhSach;
 import Modul.*;
 import Modul.Error.InvalidNumberException;
 import Modul.Error.NotExsitException;
+import Modul.SupportModul.DocGhiFile;
 import Modul.SupportModul.MySort;
 
+import java.io.Serializable;
 import java.util.InputMismatchException;
 
-public class DanhSachUuDai implements ConsoleIO, ChucNangDS, Cloneable {
+public class DanhSachUuDai implements ConsoleIO, ChucNangDS, Cloneable, Serializable {
     private MyArray<ChiTietDichVu> dsUuDai = new MyArray<ChiTietDichVu>();
 
     public DanhSachUuDai(){
@@ -17,9 +19,18 @@ public class DanhSachUuDai implements ConsoleIO, ChucNangDS, Cloneable {
         return (DanhSachUuDai) super.clone();
     }
 
+    public MyArray<ChiTietDichVu> getDsUuDai() {
+        return dsUuDai;
+    }
+
+    public void setDsUuDai(MyArray<ChiTietDichVu> dsUuDai) {
+        this.dsUuDai = dsUuDai;
+    }
+
     @Override
     public void nhapThongTin() {
         while (true){
+            System.out.println();
             System.out.println(Text.center("DANH SÁCH DỊCH VỤ ƯU ĐÃI",40,'-'));
             System.out.println("|"+Text.leftAt(10,Text.setLength("1. Thêm ưu đãi",27),' ')+"|");
             System.out.println("|"+Text.leftAt(10,Text.setLength("2. Sửa ưu đãi",27),' ')+"|");
@@ -54,11 +65,12 @@ public class DanhSachUuDai implements ConsoleIO, ChucNangDS, Cloneable {
     @Override
     public void xuatThongTin() {
         if (dsUuDai.getLength()>0){
-            System.out.println(Text.center("THÔNG TIN DỊCH VỤ ƯU ĐÃI",40,'-'));
+            System.out.println(Text.center("THÔNG TIN DỊCH VỤ ƯU ĐÃI",91,' '));
             System.out.println(DanhSachUuDai.title());
             for (int i=0;i<dsUuDai.getLength();i++){
                 System.out.println(dsUuDai.getAt(i).getUuDaiStr());
             }
+            System.out.println();
         }
         else {
             System.out.println("<!> Danh sách ưu đãi trống");
@@ -87,13 +99,15 @@ public class DanhSachUuDai implements ConsoleIO, ChucNangDS, Cloneable {
         ChiTietDichVu ct = new ChiTietDichVu();
         ct.nhapThongTin();
         dsUuDai.push(ct);
+        writeToFile();
     }
 
-    public void them(DanhSachDichVu ds){
-        ChiTietDichVu ct = new ChiTietDichVu();
-        ct.nhapThongTin(ds);
-        dsUuDai.push(ct);
-    }
+//    public void them(DanhSachDichVu ds){
+//        ChiTietDichVu ct = new ChiTietDichVu();
+//        ct.nhapThongTin(ds);
+//        dsUuDai.push(ct);
+//        writeToFile();
+//    }
 
     @Override
     public void xoa() {
@@ -116,6 +130,7 @@ public class DanhSachUuDai implements ConsoleIO, ChucNangDS, Cloneable {
             dsUuDai.removeAt(dsUuDai.indexOf(ct));
             System.out.println("<!> Xóa thành công ưu đãi khỏi danh sách!");
         }
+        writeToFile();
     }
 
     @Override
@@ -130,6 +145,7 @@ public class DanhSachUuDai implements ConsoleIO, ChucNangDS, Cloneable {
         }
         System.out.println(" Bạn đang sửa mã DV: "+ct.getMaDV());
         ct.suaThongTin();
+        writeToFile();
     }
 
     @Override
@@ -154,15 +170,25 @@ public class DanhSachUuDai implements ConsoleIO, ChucNangDS, Cloneable {
                 break;
             case 4: xoa();
                 break;
+            case 5: sapXep();
+                break;
+            case 6: xuatThongTin();
+                break;
         }
     }
 
     @Override
     public void writeToFile() {
+        String name = "./Data/UuDaiVip.txt";
+        DocGhiFile<ChiTietDichVu> ghi = new DocGhiFile<ChiTietDichVu>(dsUuDai);
+        ghi.ghiFileVaoThuMuc(name);
     }
 
     @Override
     public void readFromFile() {
+        String name = "./Data/UuDaiVip.txt";
+        DocGhiFile<ChiTietDichVu> doc = new DocGhiFile<ChiTietDichVu>();
+        dsUuDai = doc.docFileTuThuMuc(name);
     }
 
     @Override
@@ -191,9 +217,9 @@ public class DanhSachUuDai implements ConsoleIO, ChucNangDS, Cloneable {
     }
 
     public static String title(){
-        String header = Text.center("",86,'-');
+        String header = Text.center("",91,'-');
         String format = String.format("|%15s|%25s|%10s|%15s|%20s|","Mã DV","Tên DV","Số lượt","Đơn vị","Ngày tạo");
-        String footer = Text.center("",86,'-');
+        String footer = Text.center("",91,'-');
         return header+"\n"+format+"\n"+footer;
     }
 }

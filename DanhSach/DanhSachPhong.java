@@ -4,6 +4,7 @@ import Modul.*;
 import Modul.Error.InvalidNumberException;
 import Modul.Error.NotExsitException;
 import Modul.SupportModul.DocGhiFile;
+import Modul.SupportModul.MySort;
 
 import java.util.InputMismatchException;
 
@@ -23,7 +24,23 @@ public class DanhSachPhong implements ChucNangDS, ConsoleIO {
 
     @Override
     public void timKiem() {
+        System.out.print("> Nhập thông tin phòng cần tìm: ");
+        MyArray<Phong> result = modulTimKiem(sc.nextLine().toLowerCase());
+        if (result != null){
+            if (result.getLength()>1){
+                System.out.println(DanhSachPhong.title());
+                for (int i=0;i< result.getLength();i++){
+                    System.out.println(result.getAt(i).toString());
+                }
+            }
+            else {
+                result.getAt(0).xuatThongTin();
+            }
 
+        }
+        else {
+            System.out.println("<!> Không tìm thấy kết quả nào!");
+        }
     }
 
     public void hienThiPhongTrong(){
@@ -92,6 +109,7 @@ public class DanhSachPhong implements ChucNangDS, ConsoleIO {
             if (choice == 3){
                 break;
             }
+            writeToFile();
         }
     }
 
@@ -101,17 +119,83 @@ public class DanhSachPhong implements ChucNangDS, ConsoleIO {
 
     @Override
     public void xoa() {
-
+        System.out.print("> Nhập mã phòng muốn xóa: ");
+        Phong nv;
+        try{
+            nv = layDuLieuPhong(sc.nextLine().toLowerCase());
+        } catch (NotExsitException e) {
+            System.out.println(e.toString());
+            return;
+        }
+        System.out.print("> Bạn muốn xóa phòng: "+nv.getMaPhong() +" (y/n)? ");
+        char isDel = 'n';
+        try{
+            isDel = sc.nextLine().charAt(0);
+        } catch (InputMismatchException e){
+            System.out.println("<!> Lựa chọn không hợp lệ!");
+        }
+        if (isDel == 'y'|| isDel =='Y'){
+            dsp.removeAt(dsp.indexOf(nv));
+            System.out.println("<!> Xóa thành công phòng!");
+        }
+        writeToFile();
     }
 
     @Override
     public void sua() {
+        System.out.print("> Nhập mã phòng muốn sửa: ");
+        Phong kh;
+        try{
+            kh = layDuLieuPhong(sc.nextLine().toLowerCase());
+        } catch (NotExsitException e){
+            System.out.println(e.toString());
+            return;
+        }
+        System.out.println(" Bạn đang sửa thông tin của: "+kh.getMaPhong());
+        kh.suaThongTin();
+        writeToFile();
+    }
 
+    public Phong layDuLieuPHong(String maPhong) throws NotExsitException {
+        for (int i=0;i<dsp.getLength();i++){
+            Phong pg = dsp.getAt(i);
+            if (maPhong.equalsIgnoreCase(pg.getMaPhong())){
+                return pg;
+            }
+        }
+        throw new NotExsitException("mã phòng "+maPhong);
     }
 
     @Override
     public void sapXep() {
-
+        System.out.println();
+        System.out.println(Text.center("SẮP XẾP DANH SÁCH PHÒNG",40,'-'));
+        System.out.println(" 1. Theo mã phòng (asc/desc)");
+        System.out.println(" 2. Theo mã lầu (asc/desc)");
+        System.out.println(" 3. Theo số giường (asc/desc)");
+        System.out.println(" 4. Theo số người tối đa (asc/desc)");
+        System.out.println(" 5. Theo loại phòng (asc/desc)");
+        System.out.println(" 6. Theo trạng thái (asc/desc)");
+        System.out.println("(Lựa chọn gồm số + asc hay desc, vd: 1asc hay 2desc");
+        System.out.print("> Lựa chọn của bạn: ");
+        String choice = sc.nextLine();
+        if (choice.length()<2){
+            System.out.println("<!> Lựa chọn không hợp lệ!");
+            return;
+        }
+        int select = choice.charAt(0)-48;
+        if (select<1 || select>6){
+            System.out.println("<!> Lựa chọn không hợp lệ!");
+            return;
+        }
+        if (choice.charAt(1) != 'a' && choice.charAt(1) != 'A' && choice.charAt(1) != 'D'&& choice.charAt(1) != 'd'){
+            System.out.println("<!> Lựa chọn không hợp lệ!");
+            return;
+        }
+        if (choice.charAt(1) == 'a' || choice.charAt(1)=='A')
+            sapXepTangDan(select);
+        else sapXepGiamDan(select);
+        xuatThongTin();
     }
 
     @Override
@@ -134,12 +218,14 @@ public class DanhSachPhong implements ChucNangDS, ConsoleIO {
 
     @Override
     public void sapXepTangDan(int type) {
-
+        MySort<Phong> s = new MySort<>();
+        s.sort(dsp,type,true);
     }
 
     @Override
     public void sapXepGiamDan(int type) {
-
+        MySort<Phong> s = new MySort<>();
+        s.sort(dsp,type,false);
     }
 
     @Override
@@ -158,7 +244,6 @@ public class DanhSachPhong implements ChucNangDS, ConsoleIO {
 
     @Override
     public void nhapThongTin() {
-        readFromFile();
         while (true){
             System.out.println();
             System.out.println(Text.center("DANH SÁCH PHÒNG",40,'-'));
@@ -214,7 +299,7 @@ public class DanhSachPhong implements ChucNangDS, ConsoleIO {
             Phong pg = dsp.getAt(i);
             if (pg.getMaPhong().toLowerCase().contains(str) || Integer.toString(pg.getMaLau()).contains(str) ||
                     Integer.toString(pg.getSoGiuong()).contains(str) || Integer.toString(pg.getSoNguoiToiDa()).contains(str)
-                    || pg.getTypeStr().contains(str)) {
+                    || pg.getTypeStr().toLowerCase().contains(str) || pg.getTinhTrangStr().toLowerCase().contains(str)) {
                 result.push(pg);
             }
         }

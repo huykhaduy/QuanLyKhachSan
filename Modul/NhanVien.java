@@ -1,5 +1,6 @@
 package Modul;
 
+import Controller.Program;
 import Modul.SupportModul.DateTime;
 import Modul.SupportModul.DiaChi;
 
@@ -13,7 +14,7 @@ public abstract class NhanVien extends ConNguoi implements MyCompare<NhanVien>, 
 
     public NhanVien() {
         super();
-        maNV = ++id;
+        maNV = id>Program.getDSNV().getLargestId()?(++id):(Program.getDSNV().getLargestId()+1);
         maNVStr = getMaNVStr();
         ngayThamGia.setCurrentTime();
     }
@@ -71,71 +72,6 @@ public abstract class NhanVien extends ConNguoi implements MyCompare<NhanVien>, 
         super.xuatThongTin();
         System.out.println(" - Ngày tham gia: "+ngayThamGia.toStringNgay());
     }
-
-//    public void suaThongTin(){
-//        //Sửa thuộc tính chung cho nhân viên
-//        int step = 1;
-//        String temp;
-//        do {
-//            try{
-//                if (step == 1){
-//                    System.out.print("> Nhập họ tên NV: ");
-//                    temp = sc.nextLine();
-//                    if (temp.equals("")){
-//                        step++;
-//                        continue;
-//                    }
-//                    setName(temp);
-//                }
-//
-//                if (step == 2){
-//                    System.out.print("> Nhập CCCD/CMND: ");
-//                    temp = sc.nextLine();
-//                    if (temp.equals("")){
-//                        step++;
-//                        continue;
-//                    }
-//                    setCmnd(temp);
-//                }
-//
-//                if (step == 3){
-//                    System.out.print("> Nhập số điện thoại: ");
-//                    temp = sc.nextLine();
-//                    if (temp.equals("")){
-//                        step++;
-//                        continue;
-//                    }
-//                    setSoDienThoai(temp);
-//                }
-//
-//                if (step == 4){
-//                    DateTime dt = new DateTime();
-//                    dt.nhapNgaySinh();
-//                    if (dt.compareDateTime(DateTime.getTimeNow())>=0){
-//                        step++;
-//                        continue;
-//                    }
-//                    setNgaySinh(dt);
-//                }
-//
-//                if (step ==5){
-//                    DiaChi dc = new DiaChi();
-//                    dc.NhapDiaChi();
-//                    if (dc.toString().equals("")){
-//                        step++;
-//                        continue;
-//                    }
-//                    setDiaChi(dc);
-//                }
-//
-//                step++;
-//            } catch (Exception e) {
-//                System.out.println(e.toString());
-//            }
-//
-//        } while (step<6);
-//    }
-
     public abstract void lamViec();
     public abstract int getChucVu();
     public String getChucVuStr(){

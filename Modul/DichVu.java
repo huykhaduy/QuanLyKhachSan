@@ -4,8 +4,10 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 
+import Controller.Program;
 import Modul.Error.InvalidNumberException;
 import Modul.Error.InvalidStringException;
+import Modul.Error.NotExsitException;
 import Modul.SupportModul.Check;
 import Modul.SupportModul.DateTime;
 import Modul.SupportModul.DiaChi;
@@ -40,7 +42,13 @@ public class DichVu implements ConsoleIO, Serializable, MyCompare<DichVu>{
         if (maDV.length()<3){
             throw new InvalidStringException("Mã dịch vụ phải có từ 3 kí tự trở lên");
         }
-        this.maDV = maDV;
+        try {
+            DichVu p = Program.getDSDV().layDuLieuDV(maDV);
+        } catch (NotExsitException e) {
+            this.maDV = maDV;
+            return;
+        }
+        throw new InvalidStringException("Mã dịch vụ "+maDV+" đã tồn tại");
     }
 
     public String getTenDV() {

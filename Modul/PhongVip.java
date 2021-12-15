@@ -10,10 +10,23 @@ public class PhongVip extends Phong {
     public PhongVip(){
         super();
         loaiPhong = 1;
+        setDstn();
+        try {
+            uuDaiVip = Program.getDsudVip().clone();
+        } catch (CloneNotSupportedException e) {
+            System.out.println("<!> Phương thức clone không hỗ trợ!");
+        }
+
     }
     public PhongVip(String maphong, int malau, int sogiuong, int songuoitoida, boolean tinhtrang){
         super(maphong,malau,sogiuong,songuoitoida,tinhtrang);
         loaiPhong = 1;
+        setDstn();
+        try {
+            uuDaiVip = Program.getDsudVip().clone();
+        } catch (CloneNotSupportedException e) {
+            System.out.println("<!> Phương thức clone không hỗ trợ!");
+        }
     }
 
     public DanhSachUuDai getUuDaiVip() {

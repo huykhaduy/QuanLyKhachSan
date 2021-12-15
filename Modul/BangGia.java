@@ -1,7 +1,9 @@
 package Modul;
 
+import DanhSach.MyArray;
 import Modul.Error.InvalidNumberException;
 import Modul.SupportModul.Check;
+import Modul.SupportModul.DocGhiFile;
 
 import java.math.BigDecimal;
 import java.util.Scanner;
@@ -11,71 +13,73 @@ public class BangGia{
     private boolean isSet = false;
     private boolean isSetVip = false;
     //Gia Phong Thuong
-    private BigDecimal[] giaPhongThuong = new BigDecimal[3];
+    private MyArray<BigDecimal> giaPhongThuong = new MyArray<BigDecimal>();
     //Gia Phong Vip
-    private BigDecimal[] giaPhongVip = new BigDecimal[3];
+    private MyArray<BigDecimal> giaPhongVip = new MyArray<BigDecimal>();
 
     public BangGia(){
-        giaPhongVip[0] = new BigDecimal("0");
-        giaPhongVip[1] = new BigDecimal("0");
-        giaPhongVip[2] = new BigDecimal("0");
-        giaPhongThuong[0] = new BigDecimal("0");
-        giaPhongThuong[1] = new BigDecimal("0");
-        giaPhongThuong[2] = new BigDecimal("0");
+        giaPhongThuong.push(new BigDecimal("0"));
+        giaPhongThuong.push(new BigDecimal("0"));
+        giaPhongThuong.push(new BigDecimal("0"));
+        giaPhongVip.push(new BigDecimal("0"));
+        giaPhongVip.push(new BigDecimal("0"));
+        giaPhongVip.push(new BigDecimal("0"));
     }
 
     public BigDecimal getGiaPhongThuongNgay() {
-        return giaPhongThuong[0];
+        return giaPhongThuong.getAt(0);
     }
 
     public void setGiaPhongThuongNgay(BigDecimal giaPhongThuongNgay) throws InvalidNumberException {
         Check.checkGiaTien(giaPhongThuongNgay);
-        this.giaPhongThuong[0] = giaPhongThuongNgay;
+        this.giaPhongThuong.setAt(giaPhongThuongNgay,0);
+
     }
 
     public BigDecimal getGiaPhongThuongGio() {
-        return giaPhongThuong[1];
+        return giaPhongThuong.getAt(1);
     }
 
     public void setGiaPhongThuongGio(BigDecimal giaPhongThuongGio) throws InvalidNumberException {
         Check.checkGiaTien(giaPhongThuongGio);
-        this.giaPhongThuong[1] = giaPhongThuongGio;
+        this.giaPhongThuong.setAt(giaPhongThuongGio,1);
     }
 
     public BigDecimal getGiaPhongThuongPhut() {
-        return giaPhongThuong[2];
+        return giaPhongThuong.getAt(2);
     }
 
     public void setGiaPhongThuongPhut(BigDecimal giaPhongThuongPhut) throws InvalidNumberException {
         Check.checkGiaTien(giaPhongThuongPhut);
-        this.giaPhongThuong[2] = giaPhongThuongPhut;
+        this.giaPhongThuong.setAt(giaPhongThuongPhut,2);
     }
 
     public BigDecimal getGiaPhongVipNgay() {
-        return giaPhongVip[0];
+        return giaPhongVip.getAt(0);
     }
 
     public void setGiaPhongVipNgay(BigDecimal giaPhongVipNgay) throws InvalidNumberException {
         Check.checkGiaTien(giaPhongVipNgay);
-        this.giaPhongVip[0] = giaPhongVipNgay;
+        this.giaPhongVip.setAt(giaPhongVipNgay,0);
     }
 
     public BigDecimal getGiaPhongVipGio() {
-        return giaPhongVip[1];
+        return giaPhongVip.getAt(1);
     }
 
     public void setGiaPhongVipGio(BigDecimal giaPhongVipGio) throws InvalidNumberException {
         Check.checkGiaTien(giaPhongVipGio);
-        this.giaPhongVip[1] = giaPhongVipGio;
+        this.giaPhongVip.setAt(giaPhongVipGio,1);
     }
 
     public BigDecimal getGiaPhongVipPhut() {
-        return giaPhongVip[2];
+        return giaPhongVip.getAt(2);
     }
 
     public void setGiaPhongVipPhut(BigDecimal giaPhongVipPhut) throws InvalidNumberException {
         Check.checkGiaTien(giaPhongVipPhut);
-        this.giaPhongVip[2] = giaPhongVipPhut;
+        this.giaPhongVip.setAt(giaPhongVipPhut,2);
+
     }
     public void thayDoiGiaTienThuong(){
         System.out.println(Text.center("BẢNG GIÁ PHÒNG THƯỜNG",40,'-'));
@@ -102,6 +106,7 @@ public class BangGia{
             }
         } while (step<4);
         isSet = true;
+        writeToFile();
     }
 
     public void thayDoiGiaTienVip(){
@@ -129,19 +134,44 @@ public class BangGia{
             }
         } while (step<4);
         isSetVip = true;
+        writeToFile();
     }
 
     public void hienThiGiaTienThuong(){
         System.out.println(Text.center("BẢNG GIÁ PHÒNG THƯỜNG",40,'-'));
-        System.out.println("Giá phòng theo ngày: "+giaPhongThuong[0]);
-        System.out.println("Giá phòng theo giờ: "+giaPhongThuong[1]);
-        System.out.println("Giá phòng theo ngày: "+giaPhongThuong[2]);
+        System.out.println("Giá phòng theo ngày: "+giaPhongThuong.getAt(0).toString());
+        System.out.println("Giá phòng theo giờ: "+giaPhongThuong.getAt(1).toString());
+        System.out.println("Giá phòng theo ngày: "+giaPhongThuong.getAt(2).toString());
 
     }
     public void hienThiGiaTienVip(){
         System.out.println(Text.center("BẢNG GIÁ PHÒNG VIP",40,'-'));
-        System.out.println("Giá phòng theo ngày: "+giaPhongVip[1]);
-        System.out.println("Giá phòng theo giờ: "+giaPhongVip[2]);
-        System.out.println("Giá phòng theo ngày: "+giaPhongVip[3]);
+        System.out.println("Giá phòng theo ngày: "+giaPhongVip.getAt(0).toString());
+        System.out.println("Giá phòng theo giờ: "+giaPhongVip.getAt(1).toString());
+        System.out.println("Giá phòng theo ngày: "+giaPhongVip.getAt(2).toString());
+    }
+
+    public void writeToFile(){
+        String name1 = "./Data/GiaPhongThuong.txt";
+        String name2 = "./Data/GiaPhongVip.txt";
+        DocGhiFile<BigDecimal> ghiThuong = new DocGhiFile<BigDecimal>(giaPhongThuong);
+        ghiThuong.ghiFileVaoThuMuc(name1);
+        DocGhiFile<BigDecimal> ghiVip = new DocGhiFile<BigDecimal>(giaPhongVip);
+        ghiVip.ghiFileVaoThuMuc(name2);
+    }
+
+    public void readFromFile(){
+        String name1 = "./Data/GiaPhongThuong.txt";
+        String name2 = "./Data/GiaPhongVip.txt";
+        DocGhiFile<BigDecimal> ghiThuong = new DocGhiFile<BigDecimal>();
+        MyArray<BigDecimal> test = ghiThuong.docFileTuThuMuc(name1);
+        if (test.getLength()>0){
+            giaPhongThuong = test;
+        }
+        DocGhiFile<BigDecimal> ghiVip = new DocGhiFile<BigDecimal>();
+        test = ghiVip.docFileTuThuMuc(name2);
+        if (test.getLength()>0){
+            giaPhongVip = test;
+        }
     }
 }

@@ -61,9 +61,10 @@ public class LeTanHandle {
         dskh.them();
     }
 
-    public static void hienThiPhongTrong(){
+    public static void hienThiPhong(){
         DanhSachPhong dsp = Program.getDSP();
-        dsp.hienThiPhongTrong();
+//        dsp.hienThiPhongTrong();
+        dsp.timKiem();
     }
 
     public static void yeuCauDichVu(){
@@ -82,6 +83,36 @@ public class LeTanHandle {
             return;
         }
         DanhSachHoaDon dshd = Program.getDSHD();
+    }
+
+    public static void xemGiaPhong(){
+        BangGia bangGia = Program.getBangGia();
+        while (true){
+            System.out.println();
+            System.out.println(Text.center("BẢNG GIÁ",60,'-'));
+            System.out.println("|"+Text.leftAt(15,Text.setLength("1. Xem giá phòng thường",42),' ')+"|");
+            System.out.println("|"+Text.leftAt(15,Text.setLength("2. Xem giá phòng vip",42),' ')+"|");
+            System.out.println("|"+Text.leftAt(15,Text.setLength("3. Trở về danh sách",42),' ')+"|");
+            System.out.println(Text.center("",60,'-'));
+            System.out.print("> Nhập lựa chọn: ");
+            String choice = sc.nextLine();
+            switch (choice){
+                case "1":
+                    bangGia.hienThiGiaTienThuong();
+                    break;
+                case "2":
+                    bangGia.hienThiGiaTienVip();
+                    break;
+                case "3":
+                    return;
+                default:
+                    System.out.println("<!> Lựa chọn không hợp lệ!");
+                    break;
+            }
+        }
+    }
+
+    public static void xemUuDai(){
 
     }
 }
